@@ -3,14 +3,6 @@
   USB-snes-to-digital
   https://github.com/doj/USB-snes-to-digital
 
-  This software requires the USB host shield and the corresponding library:
-  https://github.com/felis/USB_Host_Shield_2.0
-  https://www.arduinolibraries.info/libraries/usb-host-shield-library-2-0
-
-  The software was inspired by
-  https://create.arduino.cc/projecthub/Bobbs/atari-ps3-controller-221d10?ref=part&ref_id=31791&offset=3
-  https://create.arduino.cc/projecthub/DocSnyderde/connect-usb-joystick-to-commodore-c64-2fb5ba
-
   The following Arduino Uno pins are used:
   pin 9-13 used by the USB host shield (library)
 
@@ -19,18 +11,23 @@
   pin 2 - left
   pin 3 - right
   pin 4 - fire
+  pin 5 - fire 2
+  pin 6 - fire 3
   you can change the pin assignment with the pin* variables below
 
   Features:
-  - use digital x-pad for joystick directions.
-  - use X button for fire
-  - use X button for auto fire with 5 Hz
-  - use X button for auto fire with 10 Hz
-  - use X button for up direction
-  - use start button for fire 2 on POT X
-  - use select button for fire 3 on POT Y
+  - [ ] use digital x-pad for joystick directions.
+  - [ ] use B button for fire
+  - [ ] use X button for up direction
+  - [ ] use L button for left
+  - [ ] use R button for right
+  - [ ] use A button for auto fire with 5 Hz
+  - [ ] use Y button for auto fire with 10 Hz
+  - [ ] use start button for fire 2 on POT X
+  - [ ] use select button for fire 3 on POT Y
+  - [ ] use analog joystick of a PlayStation 3 controller for POT X and POT Y
 
-  ~/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h
+  /Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h
 */
 
 int pinUp = 0;
@@ -38,6 +35,8 @@ int pinDown = 1;
 int pinLeft = 2;
 int pinRight = 3;
 int pinFire = 4;
+int pinFire2 = 5;
+int pinFire3 = 6;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
