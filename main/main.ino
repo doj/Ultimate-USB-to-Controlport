@@ -30,31 +30,43 @@
   /Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h
 */
 
-int pinUp = 0;
-int pinDown = 1;
-int pinLeft = 2;
-int pinRight = 3;
-int pinFire = 4;
-int pinFire2 = 5;
-int pinFire3 = 6;
+#define USE_LCD 1
+
+#if USE_LCD
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(/*RS=*/2, /*E=*/3, /*D4..D7*/4,5,6,7);
+
+#else
+#define pinUp    0
+#define pinDown  1
+#define pinLeft  2
+#define pinRight 3
+#define pinFire  4
+#define pinFire2 5
+#define pinFire3 6
+#endif
 
 // the setup function runs once when you press reset or power the board
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
+#if USE_LCD
+  lcd.begin(/*columns=*/16, /*rows=*/2);
+#else
   pinMode(pinUp, OUTPUT);
   pinMode(pinDown, OUTPUT);
   pinMode(pinLeft, OUTPUT);
   pinMode(pinRight, OUTPUT);
   pinMode(pinFire, OUTPUT);
+#endif
 }
 
 // the loop function runs over and over again forever
-int blink = LOW;
-int blinkState = 0;
-int togglePin = 0;
-int autofire = 1;
-int dirState = 0;
+char blink = LOW;
+char blinkState = 0;
+char togglePin = 0;
+char autofire = 1;
+char dirState = 0;
 void loop() {
   // blink LED on pin 13
   if (++blinkState > 10)
@@ -62,8 +74,14 @@ void loop() {
     digitalWrite(LED_BUILTIN, blink);
     blink = ! blink;
     blinkState = 0;
+
+#if USE_LCD
+    lcd.setCursor(0,1);
+    lcd.print(blink ? "on " : "off");
+#endif
   }
 
+#if !USE_LCD
   if (++dirState > 10)
   {
     dirState = 0;
@@ -85,6 +103,7 @@ void loop() {
     digitalWrite(pinFire, LOW);
     autofire = 1;
   }
+#endif
 
   delay(100);
 }
