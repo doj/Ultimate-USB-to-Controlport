@@ -6,13 +6,13 @@
   The following Arduino Uno pins are used:
   pin 9-13 used by the USB host shield (library)
 
-  pin 0 - up
-  pin 1 - down
-  pin 2 - left
-  pin 3 - right
-  pin 4 - fire
-  pin 5 - fire 2
-  pin 6 - fire 3
+  pin 2 - up
+  pin 3 - down
+  pin 4 - left
+  pin 5 - right
+  pin 6 - fire
+  pin 7 - fire 2
+  pin 8 - fire 3
   you can change the pin assignment with the pin* variables below
 
   Features:
@@ -92,6 +92,8 @@ void debug(const uint8_t v)
 #endif
 }
 
+////////////////////////////////////////////////////////////////////
+
 class iNNEXT : public iNNEXTevents
 {
   int8_t m_x = 0x7f;
@@ -142,6 +144,8 @@ iNNEXT::OnButtonDn(uint8_t but_id)
 iNNEXT innext;
 iNNEXTparser innext_parser(&innext);
 
+////////////////////////////////////////////////////////////////////
+
 // the setup function runs once when you press reset or power the board
 void setup()
 {
@@ -184,6 +188,8 @@ char autofire = 1;
 char dirState = 0;
 void loop()
 {
+  Usb.Task();
+
 #if 0
   // blink LED on pin 13
   if (++blinkState > 10)
@@ -225,5 +231,4 @@ void loop()
   delay(100);
 #endif
 
-  Usb.Task();
 }
