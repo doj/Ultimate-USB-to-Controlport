@@ -56,14 +56,14 @@ iNNEXTparser::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
   if (buf[X_INDEX] != oldX)
     {
       oldX = buf[X_INDEX];
-      joyEvents->OnX((int8_t)oldX);
+      joyEvents->OnX(oldX);
     }
 
 #define Y_INDEX 4
   if (buf[Y_INDEX] != oldY)
     {
       oldY = buf[Y_INDEX];
-      joyEvents->OnY((int8_t)oldY);
+      joyEvents->OnY(oldY);
     }
 
 #if 0

@@ -6,8 +6,8 @@
 class iNNEXTevents
 {
 public:
-  virtual void OnX(int8_t x) = 0;
-  virtual void OnY(int8_t y) = 0;
+  virtual void OnX(uint8_t x) = 0;
+  virtual void OnY(uint8_t y) = 0;
   virtual void OnButtonUp(uint8_t but_id) = 0;
   virtual void OnButtonDn(uint8_t but_id) = 0;
 };
