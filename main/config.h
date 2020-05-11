@@ -33,15 +33,15 @@
 /// set the Arduino pin for Joystick Right on DB9 pin 4
 #define pinRight PIN_A3
 /// set the Arduino pin for Joystick Fire on DB9 pin 6
-#define pinFire  PIN_A4
+#define pinFire  PIN_A5
 /// set the Arduino pin for Pot X on DB9 pin 9
-#define pinPotX  PIN_A5
+#define pinPotX  PIN_D0
 /// set the Arduino pin for Pot Y on DB9 pin 5
-#define pinPotY  PIN_D0
+#define pinPotY  PIN_A4
 /// set the Arduino pin for Fire 2
-#define pinFire2 pinPotX
+#define pinFire2 pinPotY
 /// set the Arduino pin for Fire 3
-#define pinFire3 pinPotY
+#define pinFire3 pinPotX
 
 /// set the sensitivity of an axis event.
 /// small values make the axis trigger early.
@@ -49,3 +49,8 @@
 #define AXIS_SENSITIVITY 64
 /// set the integer value for the center position of X/Y USB joystick axis.
 #define AXIS_CENTER 0x7f
+
+/// frequency of auto fire on button A
+static uint8_t AUTO_FIRE_A_FREQ = 5;
+/// frequency of auto fire on button Y
+static uint8_t AUTO_FIRE_Y_FREQ = 3;

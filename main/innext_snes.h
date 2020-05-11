@@ -15,9 +15,9 @@ public:
 class iNNEXTparser : public HIDReportParser
 {
   iNNEXTevents *joyEvents;
+  uint16_t oldButtons;
   uint8_t oldX;
   uint8_t oldY;
-  uint16_t oldButtons;
 
 public:
   iNNEXTparser(iNNEXTevents *evt);

@@ -39,26 +39,26 @@
 
 ///@name Sony joystick button names
 ///@{
-#define BUT_TRIANGLE 0
-#define BUT_CIRCLE 1
-#define BUT_CROSS 2
-#define BUT_SQUARE 3
-#define BUT_L2 4
-#define BUT_R2 5
-#define BUT_L1 6
-#define BUT_R1 7
-#define BUT_SELECT 8
-#define BUT_START 9
+#define BUT_TRIANGLE 1
+#define BUT_CIRCLE   2
+#define BUT_CROSS    3
+#define BUT_SQUARE   4
+#define BUT_L2 5
+#define BUT_R2 6
+#define BUT_L1 7
+#define BUT_R1 8
+#define BUT_SELECT 9
+#define BUT_START  10
 ///@}
 
 ///@name SNES joystick button names
 ///@{
-#define BUT_X 0
-#define BUT_A 1
-#define BUT_B 2
-#define BUT_Y 3
-#define BUT_L 4
-#define BUT_R 5
-// #define BUT_SELECT 8 // same as Sony
-// #define BUT_START 9  // same as Sony
+#define BUT_X 1
+#define BUT_A 2
+#define BUT_B 3
+#define BUT_Y 4
+#define BUT_L 5
+#define BUT_R 6
+// #define BUT_SELECT 9 // same as Sony
+// #define BUT_START  10  // same as Sony
 ///@}

@@ -7,9 +7,9 @@ void debug(const uint8_t);
 
 iNNEXTparser::iNNEXTparser(iNNEXTevents *evt) :
   joyEvents(evt),
+  oldButtons(0),
   oldX(0),
-  oldY(0),
-  oldButtons(0)
+  oldY(0)
 {
 }
 

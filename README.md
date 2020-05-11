@@ -11,6 +11,31 @@ Use the Arduino IDE library manager and install version 1.3.2
 
 Compile the program main/main.ino with the Arduino IDE.
 
+## Usage
+
+Connect a USB joystick or gamepad to the USB Host Shield.
+If the USB Host Shield (Library) supports the joystick it will produce
+events on the Commodore control port.
+
+The following buttons of a gamepad are assigned to the following
+directions:
+
+- B or cross : fire
+- A or circle : auto fire 5Hz
+- Y or square : auto fire 3Hz
+- X or triangle : up
+- L or L1 or L2 : left
+- L or R1 or R2 : right
+- select : fire 2 on POT Y
+- start : fire 3 on POT X
+
+You can configure the frequency of the auto fire from 1Hz to 255Hz.
+To configure the frequency press:
+- select+start+A+up : increase the frequency of auto fire A
+- select+start+A+down : decrease the frequency of auto fire A
+- select+start+Y+up : increase the frequency of auto fire Y
+- select+start+Y+down : decrease the frequency of auto fire Y
+
 ## LInks
 
 This software was written for the Arduino Uno board:
