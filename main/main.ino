@@ -17,8 +17,8 @@
   - [X] use A button for auto fire with 5 Hz
   - [X] use Y button for auto fire with 3 Hz
   - [X] configure auto fire frequency
-  - [ ] use start button for fire 2 on POT Y
-  - [ ] use select button for fire 3 on POT X
+  - [X] use start button for fire 2 on POT Y
+  - [X] use select button for fire 3 on POT X
   - [ ] use analog joystick of a PlayStation 3 controller for POT X and POT Y
   - [ ] use USB mouse for POT X and POT Y with 1351 protocol
   - [ ] connect to both control ports and switch joystick by magic button press
@@ -98,17 +98,38 @@ void debug(const uint8_t v)
 
 ////////////////////////////////////////////////////////////////////
 
-/// set an Arduino pin to LOW or HIGH.
-/// do it safely to interface with a Commodore control port digital input.
+/// set an Arduino pin to LOW or HIGH for a Commodore control port digital input.
+/// the Commodore control port pin is either GND (state==LOW) or high-z (state==HIGH).
 /// @param pin Arduino pin
-/// @param state LOW or HIGH
+/// @param state LOW or HIGH. use LOW if the corresponding button or direction is pressed.
 /// \sa https://www.arduino.cc/en/Tutorial/DigitalPins
 static void
 joystick(const uint8_t pin, const uint8_t state)
 {
   if (state == LOW)
     {
+      digitalWrite(pin, LOW); // GND
+      pinMode(pin, OUTPUT);
+    }
+  else
+    {
+      // configure the pin for input. This will make it high impedance (high-z).
+      pinMode(pin, INPUT);
       digitalWrite(pin, LOW);
+    }
+}
+
+/// set an Arduino pin to LOW or HIGH for a Commodore control port POT input.
+/// the Commodore control port pin is either +5V (state==LOW) or high-z (state==HIGH).
+/// @param pin Arduino pin
+/// @param state LOW or HIGH. Use LOW is the button is pressed.
+/// \note do not use this function to set digital joystick pins! Use joystick() for that purpose.
+static void
+pot(const uint8_t pin, const uint8_t state)
+{
+  if (state == LOW)
+    {
+      digitalWrite(pin, HIGH); // +5V
       pinMode(pin, OUTPUT);
     }
   else
@@ -251,14 +272,6 @@ iNNEXT::OnButtonUp(uint8_t but_id)
     {
       joystick(pinFire, HIGH);
     }
-  else if (but_id == BUT_SELECT)
-    {
-      joystick(pinFire2, HIGH);
-    }
-  else if (but_id == BUT_START)
-    {
-      joystick(pinFire3, HIGH);
-    }
   else if (but_id == BUT_X)
     {
       joystick(pinUp, HIGH);
@@ -281,6 +294,14 @@ iNNEXT::OnButtonUp(uint8_t but_id)
     joystick(pinFire, HIGH);
      timer.cancel(autoFireJoy1Task);
   }
+  else if (but_id == BUT_SELECT)
+    {
+      pot(pinFire2, HIGH);
+    }
+  else if (but_id == BUT_START)
+    {
+      pot(pinFire3, HIGH);
+    }
 
   uint16_t mask = 1 << but_id;
   m_button_state &= ~mask;
@@ -297,14 +318,6 @@ iNNEXT::OnButtonDn(uint8_t but_id)
   if (but_id == BUT_B)
     {
       joystick(pinFire, LOW);
-    }
-  else if (but_id == BUT_SELECT)
-    {
-      joystick(pinFire2, LOW);
-    }
-  else if (but_id == BUT_START)
-    {
-      joystick(pinFire3, LOW);
     }
   else if (but_id == BUT_X)
     {
@@ -332,6 +345,14 @@ iNNEXT::OnButtonDn(uint8_t but_id)
     joystick(pinFire, LOW);
     autoFireJoy1Task = timer.every(1000/2/AUTO_FIRE_Y_FREQ, autoFireCB, &autoFireState);
   }
+  else if (but_id == BUT_SELECT)
+    {
+      pot(pinFire2, LOW);
+    }
+  else if (but_id == BUT_START)
+    {
+      pot(pinFire3, LOW);
+    }
 
   uint16_t mask = 1 << but_id;
   m_button_state |= mask;
