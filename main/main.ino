@@ -3,9 +3,6 @@
   USB-snes-to-digital
   https://github.com/doj/USB-snes-to-digital
 
-  The following Arduino Uno pins are used:
-  pin 9-13 used by the USB host shield (library)
-
   use the config.h file to change pin assignments.
 
   Features:
@@ -19,13 +16,13 @@
   - [X] configure auto fire frequency
   - [X] use start button for fire 2 on POT Y
   - [X] use select button for fire 3 on POT X
-  - [ ] use analog joystick of a PlayStation 3 controller for POT X and POT Y
-  - [ ] use USB mouse for POT X and POT Y with 1351 protocol
-  - [ ] connect to both control ports and switch joystick by magic button press
-  - [ ] connect to both control ports and create two joysticks
   - [ ] support two USB joysticks with both control ports
+        https://stackoverflow.com/questions/40934344/how-to-communicate-with-the-devices-behind-a-usb-hub
+  - [ ] connect to both control ports and switch joystick by magic button press
   - [ ] reconfigure any USB button to any Commodore button
   - [ ] save configuration to Arduino EEPROM https://www.arduino.cc/en/Reference/EEPROM
+  - [ ] use analog joystick of a PlayStation 3 controller for POT X and POT Y
+  - [ ] use USB mouse for POT X and POT Y with 1351 protocol
 
   /Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h
 */
@@ -143,14 +140,12 @@ pot(const uint8_t pin, const uint8_t state)
 //// auto fire feature
 typedef Timer<2> Timer_t;
 static Timer_t timer;
-static Timer_t::Task autoFireJoy1Task = 0;
-static uint8_t autoFireState = 0;
 static bool
 autoFireCB(void *arg)
 {
   uint8_t *state = (uint8_t*)arg;
-  *state = ! *state;
-  joystick(pinFire, *state);
+  *state ^= 0x80;
+  joystick(*state & 0x7f, *state & 0x80);
   return true;
 }
 
@@ -169,7 +164,29 @@ class iNNEXT : public iNNEXTevents
   /// bit off: button not pressed.
   /// bit on:  button pressedn.
   uint16_t m_button_state = 0;
+
+  Timer_t::Task m_autoFireTask = 0;
+  uint8_t m_autoFireState = 0;
+
+  uint8_t m_pinUp;
+  uint8_t m_pinDown;
+  uint8_t m_pinLeft;
+  uint8_t m_pinRight;
+  uint8_t m_pinFire;
+  uint8_t m_pinPotX;
+  uint8_t m_pinPotY;
+
 public:
+  iNNEXT(uint8_t pinUp, uint8_t pinDown, uint8_t pinLeft, uint8_t pinRight, uint8_t pinFire, uint8_t pinPotX, uint8_t pinPotY) :
+    m_pinUp(pinUp),
+    m_pinDown(pinDown),
+    m_pinLeft(pinLeft),
+    m_pinRight(pinRight),
+    m_pinFire(pinFire),
+    m_pinPotX(pinPotX),
+    m_pinPotY(pinPotY)
+  {}
+  void init() const;
   void OnX(uint8_t x) override;
   void OnY(uint8_t y) override;
   void OnButtonUp(uint8_t but_id) override;
@@ -184,7 +201,37 @@ public:
     static const uint16_t mask = IDX2BIT(BUT_SELECT) | IDX2BIT(BUT_START) | IDX2BIT(BUT_Y);
     return (m_button_state & mask) == mask;
   }
+  void cancelAutoFire();
+  void startAutoFire(uint8_t freq);
 };
+
+void
+iNNEXT::init() const
+{
+  joystick(m_pinUp,    HIGH);
+  joystick(m_pinDown,  HIGH);
+  joystick(m_pinLeft,  HIGH);
+  joystick(m_pinRight, HIGH);
+  joystick(m_pinFire,  HIGH);
+  pot(m_pinPotX, HIGH);
+  pot(m_pinPotX, HIGH);
+}
+
+void
+iNNEXT::cancelAutoFire()
+{
+  joystick(m_pinFire, HIGH);
+  timer.cancel(m_autoFireTask);
+}
+
+void
+iNNEXT::startAutoFire(uint8_t freq)
+{
+  timer.cancel(m_autoFireTask);
+  m_autoFireState = m_pinFire;
+  joystick(m_pinFire, LOW);
+  m_autoFireTask = timer.every(1000/2/freq, autoFireCB, &m_autoFireState);
+}
 
 #if DO_DEBUG
 void
@@ -200,18 +247,18 @@ iNNEXT::OnX(uint8_t x)
 {
   if (x < AXIS_CENTER - AXIS_SENSITIVITY)
     {
-      joystick(pinLeft,   LOW);
-      joystick(pinRight, HIGH);
+      joystick(m_pinLeft,   LOW);
+      joystick(m_pinRight, HIGH);
     }
   else if (x > AXIS_CENTER + AXIS_SENSITIVITY)
     {
-      joystick(pinLeft,  HIGH);
-      joystick(pinRight, LOW);
+      joystick(m_pinLeft,  HIGH);
+      joystick(m_pinRight, LOW);
     }
   else
     {
-      joystick(pinLeft,  HIGH);
-      joystick(pinRight, HIGH);
+      joystick(m_pinLeft,  HIGH);
+      joystick(m_pinRight, HIGH);
     }
 #if DO_DEBUG
   m_x = x;
@@ -224,8 +271,8 @@ iNNEXT::OnY(uint8_t y)
 {
   if (y < AXIS_CENTER - AXIS_SENSITIVITY)
     {
-      joystick(pinUp,   LOW);
-      joystick(pinDown, HIGH);
+      joystick(m_pinUp,   LOW);
+      joystick(m_pinDown, HIGH);
 
       if (isAutoFireAConfig() && AUTO_FIRE_A_FREQ < 255)
       {
@@ -240,8 +287,8 @@ iNNEXT::OnY(uint8_t y)
     }
   else if (y > AXIS_CENTER + AXIS_SENSITIVITY)
     {
-      joystick(pinUp,  HIGH);
-      joystick(pinDown, LOW);
+      joystick(m_pinUp,  HIGH);
+      joystick(m_pinDown, LOW);
 
       if (isAutoFireAConfig() && AUTO_FIRE_A_FREQ > 1)
       {
@@ -256,8 +303,8 @@ iNNEXT::OnY(uint8_t y)
     }
   else
     {
-      joystick(pinUp,   HIGH);
-      joystick(pinDown, HIGH);
+      joystick(m_pinUp,   HIGH);
+      joystick(m_pinDown, HIGH);
     }
 #if DO_DEBUG
   m_y = y;
@@ -270,37 +317,35 @@ iNNEXT::OnButtonUp(uint8_t but_id)
 {
   if (but_id == BUT_B)
     {
-      joystick(pinFire, HIGH);
+      joystick(m_pinFire, HIGH);
     }
   else if (but_id == BUT_X)
     {
-      joystick(pinUp, HIGH);
+      joystick(m_pinUp, HIGH);
     }
   else if (but_id == BUT_L)
     {
-      joystick(pinLeft, HIGH);
+      joystick(m_pinLeft, HIGH);
     }
   else if (but_id == BUT_R)
     {
-      joystick(pinRight, HIGH);
+      joystick(m_pinRight, HIGH);
     }
   else if (but_id == BUT_A)
-  {
-    joystick(pinFire, HIGH);
-     timer.cancel(autoFireJoy1Task);
-  }
+    {
+      cancelAutoFire();
+    }
   else if (but_id == BUT_Y)
-  {
-    joystick(pinFire, HIGH);
-     timer.cancel(autoFireJoy1Task);
-  }
+    {
+      cancelAutoFire();
+    }
   else if (but_id == BUT_SELECT)
     {
-      pot(pinFire2, HIGH);
+      pot(m_pinPotX, HIGH);
     }
   else if (but_id == BUT_START)
     {
-      pot(pinFire3, HIGH);
+      pot(m_pinPotY, HIGH);
     }
 
   uint16_t mask = 1 << but_id;
@@ -317,41 +362,35 @@ iNNEXT::OnButtonDn(uint8_t but_id)
 {
   if (but_id == BUT_B)
     {
-      joystick(pinFire, LOW);
+      joystick(m_pinFire, LOW);
     }
   else if (but_id == BUT_X)
     {
-      joystick(pinUp, LOW);
+      joystick(m_pinUp, LOW);
     }
   else if (but_id == BUT_L)
     {
-      joystick(pinLeft, LOW);
+      joystick(m_pinLeft, LOW);
     }
   else if (but_id == BUT_R)
     {
-      joystick(pinRight, LOW);
+      joystick(m_pinRight, LOW);
     }
   else if (but_id == BUT_A)
-  {
-    timer.cancel(autoFireJoy1Task);
-    autoFireState = LOW;
-    joystick(pinFire, LOW);
-    autoFireJoy1Task = timer.every(1000/2/AUTO_FIRE_A_FREQ, autoFireCB, &autoFireState);
-  }
+    {
+      startAutoFire(AUTO_FIRE_A_FREQ);
+    }
   else if (but_id == BUT_Y)
-  {
-    timer.cancel(autoFireJoy1Task);
-    autoFireState = LOW;
-    joystick(pinFire, LOW);
-    autoFireJoy1Task = timer.every(1000/2/AUTO_FIRE_Y_FREQ, autoFireCB, &autoFireState);
-  }
+    {
+      startAutoFire(AUTO_FIRE_Y_FREQ);
+    }
   else if (but_id == BUT_SELECT)
     {
-      pot(pinFire2, LOW);
+      pot(m_pinPotX, LOW);
     }
   else if (but_id == BUT_START)
     {
-      pot(pinFire3, LOW);
+      pot(m_pinPotY, LOW);
     }
 
   uint16_t mask = 1 << but_id;
@@ -363,28 +402,33 @@ iNNEXT::OnButtonDn(uint8_t but_id)
 #endif
 }
 
-static iNNEXT innext;
-static iNNEXTparser innext_parser(&innext);
+#ifdef JOY1_UP
+static iNNEXT innext1(JOY1_UP,JOY1_DOWN,JOY1_LEFT,JOY1_RIGHT,JOY1_FIRE,JOY1_POTX,JOY1_POTY);
+static iNNEXTparser innext_parser1(&innext1);
+#endif
+#ifdef JOY2_UP
+static iNNEXT innext2(JOY2_UP,JOY2_DOWN,JOY2_LEFT,JOY2_RIGHT,JOY2_FIRE,JOY2_POTX,JOY2_POTY);
+static iNNEXTparser innext_parser2(&innext2);
+#endif
 
 ////////////////////////////////////////////////////////////////////
 
 // the setup function runs once when you press reset or power the board
 void setup()
 {
-  joystick(pinUp,    HIGH);
-  joystick(pinDown,  HIGH);
-  joystick(pinLeft,  HIGH);
-  joystick(pinRight, HIGH);
-  joystick(pinFire,  HIGH);
-  joystick(pinFire2, HIGH);
-  joystick(pinFire3, HIGH);
+#ifdef JOY1_UP
+  innext1.init();
+#endif
+#ifdef JOY2_UP
+  innext2.init();
+#endif
 
 #if USE_SERIAL
-  Serial.begin(115200);
+  Serial.begin(SERIAL_BAUD);
 #if !defined(__MIPSEL__)
   while (!Serial); // Wait for serial port to connect - used on Leonardo, Teensy and other boards with built-in USB CDC serial connection
 #endif
-  Serial.println("Start");
+  Serial.println("\nStart");
 #endif
 
 #if USE_LCD
@@ -398,10 +442,18 @@ void setup()
 
   delay(200);
 
-  if (!Hid.SetReportParser(0, &innext_parser))
+#ifdef JOY1_UP
+  if (!Hid.SetReportParser(0, &innext_parser1))
   {
-    debug("!inext");
+    debug("!inext1");
   }
+#endif
+#ifdef JOY2_UP
+  if (!Hid.SetReportParser(1, &innext_parser2))
+  {
+    debug("!inext2");
+  }
+#endif
 }
 
 // the loop function runs over and over again forever
