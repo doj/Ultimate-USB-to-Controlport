@@ -1,9 +1,7 @@
 // -*- c-basic-offset: 2; tab-width: 2; indent-tabs-mode: nil; mode: c++ -*-
 
 #include "innext_snes.h"
-
-void debug(const char*, int8_t line = 0);
-void debug(const uint8_t);
+#include "debug.h"
 
 iNNEXTparser::iNNEXTparser(iNNEXTevents *evt) :
   joyEvents(evt),
@@ -29,26 +27,19 @@ iNNEXTparser::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
   // debug incoming USB data packets
 #if 0
   uint8_t i = 0;
-  debug("",0);
-  while(i < len && i < 8)
+  while(i < len &&)
   {
-    debug(buf[i++]);
+    debugv(buf[i++]);
+    debug(" ");
   }
-  if (i < len)
-  {
-    debug("",1);
-    while(i < len && i < 16)
-    {
-      debug(buf[i++]);
-    }
-  }
-  return;
+  debug("\n");
 #endif
 
   if (len < 7)
     {
-      debug("usb len:");
-      debug(len);
+      debug("iNNEXT usb len:");
+      debugv(len);
+      debug("\n");
       return;
     }
 

@@ -1,17 +1,23 @@
-# USB-snes-to-digital
-Arduino uno project to convert USB joystick to digital for use with Commodore or Atari computers
+Ultimate USB to Controlport
+============================
+Arduino project to convert USB joystick and mouse to digital for use
+with [Commodore](https://www.c64-wiki.com/wiki/Control_Port)
+or [Atari](https://en.wikipedia.org/wiki/Atari_joystick_port) computers.
 
-It is currently developed to support the _iNNEXT SNES Retro USB
-Controller_.
+It is currently developed to support the [iNNEXT SNES Retro USB
+Controller](https://www.google.com/search?q=innext+snes+usb+controller),
+but should work with any generic USB joystick or gamepad.
 
-## Install
+Compile and Install
+--------------------
 
-Install the _USB Host Shield Library 2.0_.
+Install the [USB Host Shield Library 2.0](https://github.com/felis/USB_Host_Shield_2.0).
 Use the Arduino IDE library manager and install version 1.3.2
 
 Compile the program main/main.ino with the Arduino IDE.
 
-## Usage
+Usage
+------
 
 Connect a USB joystick or gamepad to the USB Host Shield.
 If the USB Host Shield (Library) supports the joystick it will produce
@@ -36,27 +42,40 @@ To configure the frequency press:
 - select+start+Y+up : increase the frequency of auto fire Y
 - select+start+Y+down : decrease the frequency of auto fire Y
 
-## LInks
+Hardware
+---------
 
-This software was written for the Arduino Uno board:
-https://store.arduino.cc/usa/arduino-uno-rev3
+This project was tested with a
+[Arduino Uno R3](https://store.arduino.cc/usa/arduino-uno-rev3) board
+and the
+[Arduino USB Host Shield](https://store.arduino.cc/usa/arduino-usb-host-shield).
+While the USB Host Shield is no longer sold by the Arduino company,
+you can easily find clones of the board on
+[AliExpress](https://www.aliexpress.com/), where you can also buy a
+clone Arduino Uno board. To connect the resistors and cables (or Sub-D
+connectors) you can also purchase a
+[Proto Shield R3](https://store.arduino.cc/usa/proto-shield-rev3-uno-size).
 
-This software requires the USB host shield and the corresponding
-library:
-https://github.com/felis/USB_Host_Shield_2.0
+The following picture shows the loation of all I/O pins on the Arduino
+Uno R3 board.
 
-The software was inspired by:
-https://create.arduino.cc/projecthub/Bobbs/atari-ps3-controller-221d10?ref=part&ref_id=31791&offset=3
-https://create.arduino.cc/projecthub/DocSnyderde/connect-usb-joystick-to-commodore-c64-2fb5ba
+![Arduino Uno R3 pinout](https://upload.wikimedia.org/wikipedia/commons/c/c9/Pinout_of_ARDUINO_Board_and_ATMega328PU.svg)
 
-Arduino Timer Interrupt programming:
-https://www.instructables.com/id/Arduino-Timer-Interrupts/
-https://playground.arduino.cc/Code/Timer1/
-https://www.robotshop.com/community/forum/t/arduino-101-timers-and-interrupts/13072
+Links
+------
+
+This software uses the
+[arduino-timer](https://github.com/contrem/arduino-timer) library.
+
+[Arduino Timer and Interrupt programming](https://learn.adafruit.com/multi-tasking-the-arduino-part-2/timers)
 
 Information on Commodore 1351 mouse:
-http://sensi.org/~svo/[m]ouse/
+[http://sensi.org/~svo/[m]ouse/](http://sensi.org/~svo/[m]ouse/)
 http://www.zimmers.net/anonftp/pub/cbm/documents/projects/interfaces/mouse/Mouse.html
 
 Information how to read joystick and POT on the C64:
 https://codebase64.org/doku.php?id=base:io_programming
+
+Contact
+--------
+Write an email to Dirk Jagdmann <doj@cubic.org>
