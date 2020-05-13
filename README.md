@@ -67,8 +67,6 @@ Links
 This software uses the
 [arduino-timer](https://github.com/contrem/arduino-timer) library.
 
-[Arduino Timer and Interrupt programming](https://learn.adafruit.com/multi-tasking-the-arduino-part-2/timers)
-
 Information on Commodore 1351 mouse:
 [http://sensi.org/~svo/[m]ouse/](http://sensi.org/~svo/[m]ouse/)
 http://www.zimmers.net/anonftp/pub/cbm/documents/projects/interfaces/mouse/Mouse.html

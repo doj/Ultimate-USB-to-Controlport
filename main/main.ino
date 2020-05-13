@@ -16,12 +16,16 @@
   - [X] configure auto fire frequency
   - [X] use start button for fire 2 on POT Y
   - [X] use select button for fire 3 on POT X
-  - [ ] support two USB joysticks with both control ports
-  https://stackoverflow.com/questions/40934344/how-to-communicate-with-the-devices-behind-a-usb-hub
+  - [X] support two USB joysticks with both control ports
+  - [ ] fix device mapping in USB Host Shield Library
   - [ ] connect to both control ports and switch joystick by magic button press
   - [ ] reconfigure any USB button to any Commodore button
   - [ ] save configuration to Arduino EEPROM https://www.arduino.cc/en/Reference/EEPROM
+  - [ ] support PlayStation Classic USB controller
+  - [ ] support PlayStation 3 controller
+  - [ ] support PlayStation 4 controller
   - [ ] use analog joystick of a PlayStation 3 controller for POT X and POT Y
+  - [ ] support Xbox controller
   - [ ] use USB mouse for POT X and POT Y with 1351 protocol
   - [ ] support mouse wheel
 
@@ -76,20 +80,15 @@ void debugv(uint8_t v, const uint8_t mode)
 #endif
 
 static USB Usb;
-static USBHub Hub(&Usb);
-static HIDUniversal HidUni(&Usb);
 
 ////////////////////////////////////////////////////////////////////
-
-static void joystick(const uint8_t pin, const uint8_t state);
-static bool autoFireCB(void *arg);
 
 /// set an Arduino pin to LOW or HIGH for a Commodore control port digital input.
 /// the Commodore control port pin is either GND (state==LOW) or high-z (state==HIGH).
 /// @param pin Arduino pin
 /// @param state LOW or HIGH. use LOW if the corresponding button or direction is pressed.
 /// \sa https://www.arduino.cc/en/Tutorial/DigitalPins
-static void
+void
 joystick(const uint8_t pin, const uint8_t state)
 {
   if (state == LOW)
@@ -110,7 +109,7 @@ joystick(const uint8_t pin, const uint8_t state)
 typedef Timer<2> Timer_t;
 static Timer_t timer;
 /// \todo see how to move this into the ControlPort class, then we can move joystick() in there as well.
-static bool
+bool
 autoFireCB(void *arg)
 {
   uint8_t *state = (uint8_t*)arg;
@@ -406,15 +405,21 @@ iNNEXT::OnButtonDn(uint8_t but_id)
 #if USE_SERIAL
   debug("Dn: ");
   debugv(but_id);
+  debug(" ");
+  debugv(m_pinUp);
   debug("\n");
 #endif
 }
 
 #ifdef JOY1_UP
+static USBHub HubJoy1(&Usb);
+static HIDUniversal HidUniJoy1(&Usb);
 static iNNEXT innext1(JOY1_UP,JOY1_DOWN,JOY1_LEFT,JOY1_RIGHT,JOY1_FIRE,JOY1_POTX,JOY1_POTY);
 static iNNEXTparser innext_parser1(&innext1);
 #endif
 #ifdef JOY2_UP
+static USBHub HubJoy2(&Usb);
+static HIDUniversal HidUniJoy2(&Usb);
 static iNNEXT innext2(JOY2_UP,JOY2_DOWN,JOY2_LEFT,JOY2_RIGHT,JOY2_FIRE,JOY2_POTX,JOY2_POTY);
 static iNNEXTparser innext_parser2(&innext2);
 #endif
@@ -461,12 +466,14 @@ public:
   void irq2();
 };
 
-HIDBoot<USB_HID_PROTOCOL_MOUSE> HidMouse(&Usb);
-
 #if defined(MOUSE1_UP)
+static USBHub HubMouse1(&Usb);
+HIDBoot<USB_HID_PROTOCOL_MOUSE> HidMouse1(&Usb);
 Commodore1351 mouse1(1, MOUSE1_UP, MOUSE1_DOWN, MOUSE1_LEFT, MOUSE1_RIGHT, MOUSE1_FIRE, MOUSE1_POTX, MOUSE1_POTY);
 #endif
 #if defined(MOUSE2_UP)
+static USBHub HubMouse2(&Usb);
+HIDBoot<USB_HID_PROTOCOL_MOUSE> HidMouse2(&Usb);
 Commodore1351 mouse2(2, MOUSE2_UP, MOUSE2_DOWN, MOUSE2_LEFT, MOUSE2_RIGHT, MOUSE2_FIRE, MOUSE2_POTX, MOUSE2_POTY);
 #endif
 
@@ -654,7 +661,9 @@ void Commodore1351::move(const int8_t x, const int8_t y)
       m_y -= 128;
     }
 
-  debug("dx=");
+  debug("num=");
+  debugv(m_num);
+  debug(" dx=");
   debugv(x, DEC);
   debug(" dy=");
   debugv(y, DEC);
@@ -700,21 +709,27 @@ void setup()
   delay(200);
 
 #if defined(MOUSE1_UP)
-  HidMouse.SetReportParser(0, &mouse1);
+  if (! HidMouse1.SetReportParser(0, &mouse1))
+    {
+      debug("!m1");
+    }
 #endif
 #if defined(MOUSE2_UP)
-  HidMouse.SetReportParser(1, &mouse2);
+  if (! HidMouse2.SetReportParser(0, &mouse2))
+    {
+      debug("!m2");
+    }
 #endif
 #ifdef JOY1_UP
-  if (!HidUni.SetReportParser(0, &innext_parser1))
+  if (! HidUniJoy1.SetReportParser(1, &innext_parser1))
     {
-      debug("!inext1");
+      debug("!joy1");
     }
 #endif
 #ifdef JOY2_UP
-  if (!HidUni.SetReportParser(1, &innext_parser2))
+  if (! HidUniJoy2.SetReportParser(2, &innext_parser2))
     {
-      debug("!inext2");
+      debug("!joy2");
     }
 #endif
 }
