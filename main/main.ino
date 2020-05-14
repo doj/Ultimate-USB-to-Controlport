@@ -41,7 +41,7 @@
 #include "timer.h"
 
 #if USE_SERIAL
-void debug(const char *str)
+void debugs(const char *str)
 {
   Serial.print(str);
 }
@@ -166,7 +166,7 @@ protected:
 
 ////////////////////////////////////////////////////////////////////
 
-#if defined(JOY1_UP) || defined(JOY2_UP)
+#if defined(JOYSTICK1) || defined(JOYSTICK2)
 
 class iNNEXT : public iNNEXTevents, public ControlPortDevice
 {
@@ -411,24 +411,37 @@ iNNEXT::OnButtonDn(uint8_t but_id)
 #endif
 }
 
-#ifdef JOY1_UP
+#if defined(JOYSTICK1)
 static USBHub HubJoy1(&Usb);
 static HIDUniversal HidUniJoy1(&Usb);
-static iNNEXT innext1(JOY1_UP,JOY1_DOWN,JOY1_LEFT,JOY1_RIGHT,JOY1_FIRE,JOY1_POTX,JOY1_POTY);
+#if JOYSTICK1 == 1
+static iNNEXT innext1(CP1_UP,CP1_DOWN,CP1_LEFT,CP1_RIGHT,CP1_FIRE,CP1_POTX,CP1_POTY);
+#elif JOYSTICK1 == 2
+static iNNEXT innext1(CP2_UP,CP2_DOWN,CP2_LEFT,CP2_RIGHT,CP2_FIRE,CP2_POTX,CP2_POTY);
+#else
+#error unknown value for JOYSTICK1
+#endif
 static iNNEXTparser innext_parser1(&innext1);
 #endif
-#ifdef JOY2_UP
+
+#if defined(JOYSTICK2)
 static USBHub HubJoy2(&Usb);
 static HIDUniversal HidUniJoy2(&Usb);
-static iNNEXT innext2(JOY2_UP,JOY2_DOWN,JOY2_LEFT,JOY2_RIGHT,JOY2_FIRE,JOY2_POTX,JOY2_POTY);
+#if JOYSTICK2 == 1
+static iNNEXT innext2(CP1_UP,CP1_DOWN,CP1_LEFT,CP1_RIGHT,CP1_FIRE,CP1_POTX,CP1_POTY);
+#elif JOYSTICK2 == 2
+static iNNEXT innext2(CP2_UP,CP2_DOWN,CP2_LEFT,CP2_RIGHT,CP2_FIRE,CP2_POTX,CP2_POTY);
+#else
+#error unknown value for JOYSTICK2
+#endif
 static iNNEXTparser innext_parser2(&innext2);
 #endif
 
-#endif
+#endif // JOYSTICK1 || JOYSTICK2
 
 ////////////////////////////////////////////////////////////////////
 
-#if defined(MOUSE1_UP) || defined(MOUSE2_UP)
+#if defined(MOUSE1) || defined(MOUSE2)
 
 class Commodore1351 : public HIDReportParser , public ControlPortDevice
 {
@@ -466,15 +479,28 @@ public:
   void irq2();
 };
 
-#if defined(MOUSE1_UP)
+#if defined(MOUSE1)
 static USBHub HubMouse1(&Usb);
-HIDBoot<USB_HID_PROTOCOL_MOUSE> HidMouse1(&Usb);
-Commodore1351 mouse1(1, MOUSE1_UP, MOUSE1_DOWN, MOUSE1_LEFT, MOUSE1_RIGHT, MOUSE1_FIRE, MOUSE1_POTX, MOUSE1_POTY);
+static HIDBoot<USB_HID_PROTOCOL_MOUSE> HidMouse1(&Usb);
+#if MOUSE1 == 1
+static Commodore1351 mouse1(1, CP1_UP, CP1_DOWN, CP1_LEFT, CP1_RIGHT, CP1_FIRE, CP1_POTX, CP1_POTY);
+#elif MOUSE1 == 2
+static Commodore1351 mouse1(1, CP2_UP, CP2_DOWN, CP2_LEFT, CP2_RIGHT, CP2_FIRE, CP2_POTX, CP2_POTY);
+#else
+#error unknown value for MOUSE 1
 #endif
-#if defined(MOUSE2_UP)
+#endif
+
+#if defined(MOUSE2)
 static USBHub HubMouse2(&Usb);
-HIDBoot<USB_HID_PROTOCOL_MOUSE> HidMouse2(&Usb);
-Commodore1351 mouse2(2, MOUSE2_UP, MOUSE2_DOWN, MOUSE2_LEFT, MOUSE2_RIGHT, MOUSE2_FIRE, MOUSE2_POTX, MOUSE2_POTY);
+static HIDBoot<USB_HID_PROTOCOL_MOUSE> HidMouse2(&Usb);
+#if MOUSE2 == 1
+static Commodore1351 mouse2(2, CP1_UP, CP1_DOWN, CP1_LEFT, CP1_RIGHT, CP1_FIRE, CP1_POTX, CP1_POTY);
+#elif MOUSE2 == 2
+static Commodore1351 mouse2(2, CP2_UP, CP2_DOWN, CP2_LEFT, CP2_RIGHT, CP2_FIRE, CP2_POTX, CP2_POTY);
+#else
+#error unknown value for MOUSE 2
+#endif
 #endif
 
 static void mouse1_irq();
@@ -483,7 +509,7 @@ static void mouse2_irq();
 static void
 mouse1_irq()
 {
-#if defined(MOUSE1_UP)
+#if defined(MOUSE1)
   mouse1.irq();
 #endif
 }
@@ -491,7 +517,7 @@ mouse1_irq()
 static void
 mouse2_irq()
 {
-#if defined(MOUSE2_UP)
+#if defined(MOUSE2)
   mouse2.irq();
 #endif
 }
@@ -686,13 +712,6 @@ void Commodore1351::move(const int8_t x, const int8_t y)
 // the setup function runs once when you press reset or power the board
 void setup()
 {
-#ifdef JOY1_UP
-  innext1.init();
-#endif
-#ifdef JOY2_UP
-  innext2.init();
-#endif
-
 #if USE_SERIAL
   Serial.begin(SERIAL_BAUD);
 #if !defined(__MIPSEL__)
@@ -703,33 +722,35 @@ void setup()
 
   if (Usb.Init() == -1)
     {
-      debug("! USB init");
+      debug("!USBinit");
     }
 
   delay(200);
 
-#if defined(MOUSE1_UP)
+#if defined(MOUSE1)
   if (! HidMouse1.SetReportParser(0, &mouse1))
     {
       debug("!m1");
     }
 #endif
-#if defined(MOUSE2_UP)
+#if defined(MOUSE2)
   if (! HidMouse2.SetReportParser(0, &mouse2))
     {
       debug("!m2");
     }
 #endif
-#ifdef JOY1_UP
+#if defined(JOYSTICK1)
+  innext1.init();
   if (! HidUniJoy1.SetReportParser(1, &innext_parser1))
     {
-      debug("!joy1");
+      debug("!j1");
     }
 #endif
-#ifdef JOY2_UP
+#if defined(JOYSTICK2)
+  innext2.init();
   if (! HidUniJoy2.SetReportParser(2, &innext_parser2))
     {
-      debug("!joy2");
+      debug("!j2");
     }
 #endif
 }

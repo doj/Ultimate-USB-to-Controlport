@@ -61,6 +61,46 @@ Uno R3 board.
 
 ![Arduino Uno R3 pinout](https://upload.wikimedia.org/wikipedia/commons/c/c9/Pinout_of_ARDUINO_Board_and_ATMega328PU.svg)
 
+The following table shows how the 2 [control ports](https://en.wikipedia.org/wiki/Atari_joystick_port) with [https://en.wikipedia.org/wiki/D-subminiature](D-sub 9)
+connectors should be connected to the Arduino pins. This suggested
+connection is for a Commodore 64. You can change the pin assignments
+in the config.h file.
+
+Control Port 1
+
+| Arduino | D-sub | Function |
+| ------- | ----- | -------- |
+| A0      | 1     | Up       |
+| A1      | 2     | Down     |
+| A2      | 3     | Left     |
+| A3      | 4     | Right    |
+| A5      | 5     | Pot Y    |
+| A4      | 6     | Fire     |
+| (n/c)   | 7     | +5V      |
+| GND     | 8     | GND      |
+| D2      | 9     | Pot X    |
+
+Control Port 2
+
+| Arduino | D-sub | Function |
+| ------- | ----- | -------- |
+| D4      | 1     | Up       |
+| D5      | 2     | Down     |
+| D6      | 3     | Left     |
+| D7      | 4     | Right    |
+| D1      | 5     | Pot Y    |
+| D8      | 6     | Fire     |
+| (n/c)   | 7     | +5V      |
+| GND     | 8     | GND      |
+| D3      | 9     | Pot X    |
+
+Note: On the Arduino pins D0 and D1 are used for the serial debug
+console. If you connect the control port Pot Y line to D1, you can't
+use the serial console any more.
+
+If you have a clone USB Host Shield, the following article may help
+you fix it: https://esp8266-notes.blogspot.com/2017/08/defective-arduino-usb-host-shield-boards.html
+
 Links
 ------
 
@@ -73,6 +113,9 @@ http://www.zimmers.net/anonftp/pub/cbm/documents/projects/interfaces/mouse/Mouse
 
 Information how to read joystick and POT on the C64:
 https://codebase64.org/doku.php?id=base:io_programming
+
+Information on the USB protocol:
+http://www.usbmadesimple.co.uk/ums_4.htm
 
 Contact
 --------
