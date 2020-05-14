@@ -15,12 +15,12 @@ public:
 class iNNEXTparser : public HIDReportParser
 {
   iNNEXTevents *joyEvents;
-  uint16_t oldButtons;
-  uint8_t oldX;
-  uint8_t oldY;
+  uint16_t oldButtons = 0;
+  uint8_t oldX = 0;
+  uint8_t oldY = 0;
 
 public:
-  iNNEXTparser(iNNEXTevents *evt);
+  iNNEXTparser(iNNEXTevents *evt) : joyEvents(evt) {}
   void setEventHandler(iNNEXTevents *e) { joyEvents = e; }
   void Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf) override;
 };

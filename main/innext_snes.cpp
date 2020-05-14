@@ -3,14 +3,6 @@
 #include "innext_snes.h"
 #include "debug.h"
 
-iNNEXTparser::iNNEXTparser(iNNEXTevents *evt) :
-  joyEvents(evt),
-  oldButtons(0),
-  oldX(0),
-  oldY(0)
-{
-}
-
 void
 iNNEXTparser::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
 {

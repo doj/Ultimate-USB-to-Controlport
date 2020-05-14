@@ -30,8 +30,8 @@ directions:
 - A or circle : auto fire 5Hz
 - Y or square : auto fire 3Hz
 - X or triangle : up
-- L or L1 or L2 : left
-- L or R1 or R2 : right
+- L or L2 : left
+- L or R2 : right
 - select : fire 2 on POT Y
 - start : fire 3 on POT X
 
@@ -41,6 +41,9 @@ To configure the frequency press:
 - select+start+A+down : decrease the frequency of auto fire A
 - select+start+Y+up : increase the frequency of auto fire Y
 - select+start+Y+down : decrease the frequency of auto fire Y
+
+You can switch the directions of all buttons (lefty mode), press:
+select+start+B+left.
 
 Hardware
 ---------
@@ -120,3 +123,4 @@ http://www.usbmadesimple.co.uk/ums_4.htm
 Contact
 --------
 Write an email to Dirk Jagdmann <doj@cubic.org>
+The source code is hosted on https://github.com/doj/Ultimate-USB-to-Controlport

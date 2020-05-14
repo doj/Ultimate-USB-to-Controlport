@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2; tab-width: 2; indent-tabs-mode: nil; mode: c++ -*-
 /*
-  USB-snes-to-digital
-  https://github.com/doj/USB-snes-to-digital
+  Ultimate USB to Controlport
+  https://github.com/doj/Ultimate-USB-to-Controlport
 
   use the config.h file to change pin assignments.
 
@@ -17,6 +17,7 @@
   - [X] use start button for fire 2 on POT Y
   - [X] use select button for fire 3 on POT X
   - [X] support two USB joysticks with both control ports
+  - [X] lefty mode
   - [ ] fix device mapping in USB Host Shield Library
   - [ ] connect to both control ports and switch joystick by magic button press
   - [ ] reconfigure any USB button to any Commodore button
@@ -39,6 +40,7 @@
 #include "innext_snes.h"
 #include "debug.h"
 #include "timer.h"
+#include "utility.h"
 
 #if USE_SERIAL
 void debugs(const char *str)
@@ -186,6 +188,20 @@ class iNNEXT : public iNNEXTevents, public ControlPortDevice
   uint8_t m_autoFireAfreq = AUTO_FIRE_A_FREQ;
   uint8_t m_autoFireYfreq = AUTO_FIRE_Y_FREQ;
 
+  ///@name SNES joystick button names
+  ///@{
+  uint8_t BUT_X = 1; ///< Sony triangle
+  uint8_t BUT_A = 2; ///< Sony circle
+  uint8_t BUT_B = 3; ///< Sony cross
+  uint8_t BUT_Y = 4; ///< Sony square
+  uint8_t BUT_L = 5; ///< Sony L2
+  uint8_t BUT_R = 6; ///< Sony R2
+  uint8_t BUT_L1 = 7; ///< only Sony
+  uint8_t BUT_R1 = 8; ///< only Sony
+  uint8_t BUT_SELECT = 9;
+  uint8_t BUT_START  = 10;
+  ///@}
+
 public:
   iNNEXT(uint8_t pinUp, uint8_t pinDown, uint8_t pinLeft, uint8_t pinRight, uint8_t pinFire, uint8_t pinPotX, uint8_t pinPotY) :
     ControlPortDevice(pinUp, pinDown, pinLeft, pinRight, pinFire, pinPotX, pinPotY)
@@ -203,6 +219,11 @@ public:
   bool isAutoFireYConfig() const
   {
     static const uint16_t mask = _BV(BUT_SELECT) | _BV(BUT_START) | _BV(BUT_Y);
+    return (m_button_state & mask) == mask;
+  }
+  bool isDirectionSwitchConfig() const
+  {
+    static const uint16_t mask = _BV(BUT_SELECT) | _BV(BUT_START) | _BV(BUT_B);
     return (m_button_state & mask) == mask;
   }
   void cancelAutoFire();
@@ -252,8 +273,22 @@ iNNEXT::OnX(uint8_t x)
 {
   if (x < AXIS_CENTER - AXIS_SENSITIVITY)
     {
-      joystick(m_pinLeft,   LOW);
-      joystick(m_pinRight, HIGH);
+      if (isDirectionSwitchConfig())
+        {
+          std::swap(m_pinLeft,m_pinRight);
+          std::swap(m_pinUp,m_pinDown);
+          std::swap(BUT_A,BUT_Y);
+          std::swap(BUT_B,BUT_X);
+          std::swap(BUT_L,BUT_R);
+          std::swap(BUT_L1,BUT_R1);
+          std::swap(BUT_SELECT,BUT_START);
+          debug("lefty\n");
+        }
+      else
+        {
+          joystick(m_pinLeft,   LOW);
+          joystick(m_pinRight, HIGH);
+        }
     }
   else if (x > AXIS_CENTER + AXIS_SENSITIVITY)
     {
