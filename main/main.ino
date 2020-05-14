@@ -3,33 +3,6 @@
   Ultimate USB to Controlport
   https://github.com/doj/Ultimate-USB-to-Controlport
 
-  use the config.h file to change pin assignments.
-
-  Features:
-  - [X] use digital x-pad for joystick directions.
-  - [X] use B button for fire
-  - [X] use X button for up direction
-  - [X] use L button for left
-  - [X] use R button for right
-  - [X] use A button for auto fire with 5 Hz
-  - [X] use Y button for auto fire with 3 Hz
-  - [X] configure auto fire frequency
-  - [X] use start button for fire 2 on POT Y
-  - [X] use select button for fire 3 on POT X
-  - [X] support two USB joysticks with both control ports
-  - [X] lefty mode
-  - [ ] fix device mapping in USB Host Shield Library
-  - [ ] connect to both control ports and switch joystick by magic button press
-  - [ ] reconfigure any USB button to any Commodore button
-  - [ ] save configuration to Arduino EEPROM https://www.arduino.cc/en/Reference/EEPROM
-  - [ ] support PlayStation Classic USB controller
-  - [ ] support PlayStation 3 controller
-  - [ ] support PlayStation 4 controller
-  - [ ] use analog joystick of a PlayStation 3 controller for POT X and POT Y
-  - [ ] support Xbox controller
-  - [ ] use USB mouse for POT X and POT Y with 1351 protocol
-  - [ ] support mouse wheel
-
   /Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino/Arduino.h
 */
 

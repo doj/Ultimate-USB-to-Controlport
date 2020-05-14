@@ -26,14 +26,16 @@ events on the Commodore control port.
 The following buttons of a gamepad are assigned to the following
 directions:
 
-- B or cross : fire
-- A or circle : auto fire 5Hz
-- Y or square : auto fire 3Hz
-- X or triangle : up
-- L or L2 : left
-- L or R2 : right
-- select : fire 2 on POT Y
-- start : fire 3 on POT X
+| NES    | Sony     | Control Port |
+| ------ | -------- | ------------
+| B      | cross    | fire
+| A      | circle   | auto fire A 5Hz
+| Y      | square   | auto fire Y 3Hz
+| X      | triangle | up
+| L      | L2       | left
+| L      | R2       | right
+| select | select   | fire 2 on POT Y
+| start  | start    | fire 3 on POT X
 
 You can configure the frequency of the auto fire from 1Hz to 255Hz.
 To configure the frequency press:
@@ -44,6 +46,23 @@ To configure the frequency press:
 
 You can switch the directions of all buttons (lefty mode), press:
 select+start+B+left.
+
+A USB mouse will be used to output the Commodore 1351 mouse protocol
+on the Pot X and Pot Y control port inputs. The following table shows
+the mouse button mapping:
+
+| Mouse      | Control Port |
+| ---------- | ------------ |
+| left       | fire
+| middle     | down
+| right      | up
+| wheel up   | left
+| wheel down | right
+| left side  | left
+| right side | right
+
+The mouse wheel is using the [Micromys protocol](http://wiki.icomp.de/wiki/Micromys_Protocol)
+Left and Right side buttons are used on the [Microsoft Intellimouse](https://en.wikipedia.org/wiki/IntelliMouse).
 
 Hardware
 ---------
@@ -101,8 +120,39 @@ Note: On the Arduino pins D0 and D1 are used for the serial debug
 console. If you connect the control port Pot Y line to D1, you can't
 use the serial console any more.
 
+If you want to change the Arduino pin assignments, change the config.h file.
+
 If you have a clone USB Host Shield, the following article may help
 you fix it: https://esp8266-notes.blogspot.com/2017/08/defective-arduino-usb-host-shield-boards.html
+
+Feature Implementation Status
+------------------------------
+The following list shows which features are implemented.
+
+- [X] use digital x-pad for joystick directions.
+- [X] use B button for fire
+- [X] use X button for up direction
+- [X] use L button for left
+- [X] use R button for right
+- [X] use A button for auto fire with 5 Hz
+- [X] use Y button for auto fire with 3 Hz
+- [X] configure auto fire frequency
+- [X] use start button for fire 2 on POT Y
+- [X] use select button for fire 3 on POT X
+- [X] support two USB joysticks with both control ports
+- [X] lefty mode
+- [ ] fix device mapping in USB Host Shield Library
+- [ ] connect to both control ports and switch joystick by magic button press
+- [ ] reconfigure any USB button to any Commodore button
+- [ ] save configuration to Arduino EEPROM https://www.arduino.cc/en/Reference/EEPROM
+- [ ] support PlayStation Classic USB controller
+- [ ] support PlayStation 3 controller
+- [ ] support PlayStation 4 controller
+- [ ] use analog joystick of a PlayStation 3 controller for POT X and POT Y
+- [ ] support Xbox controller
+- [ ] use USB mouse for POT X and POT Y with 1351 protocol
+- [ ] support mouse wheel
+- [ ] support mouse side buttons
 
 Links
 ------

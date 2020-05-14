@@ -1,7 +1,8 @@
-/**
+// -*- c-basic-offset: 2; tab-width: 2; indent-tabs-mode: nil; mode: c++ -*-
+/** @file
    arduino-timer - library for delaying function calls
 
-   Copyright (c) 2018, Michael Contreras
+   \copyright (c) 2018, Michael Contreras
    All rights reserved.
 
    Redistribution and use in source and binary forms, with or without
