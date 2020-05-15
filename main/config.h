@@ -53,22 +53,6 @@
 #define CP2_POTY  PIN_D1
 ///@}
 
-/// set to 1 or 2 to configure Joystick/Gamepad 1 for Control Port 1 or 2.
-/// comment out the define to not use Joystick 1.
-#define JOYSTICK1 1
-
-/// set to 1 or 2 to configure Joystick/Gamepad 2 for Control Port 1 or 2.
-/// comment out the define to not use Joystick 2.
-#define JOYSTICK2 2
-
-/// set to 1 or 2 to configure Mouse 1 for Control Port 1 or 2.
-/// comment out the define to not use Mouse 1.
-#define MOUSE1 1
-
-/// set to 1 or 2 to configure Mouse 2 for Control Port 1 or 2.
-/// comment out the define to not use Mouse 2.
-#define MOUSE2 2
-
 /// set the sensitivity of an axis event.
 /// small values make the axis trigger early.
 /// large values make the axis trigger late.

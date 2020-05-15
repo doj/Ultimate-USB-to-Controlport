@@ -199,3 +199,6 @@ timer_create_default()
 {
     return Timer<>();
 }
+
+typedef Timer<2> Timer_t;
+extern Timer_t timer;

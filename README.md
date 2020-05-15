@@ -47,9 +47,10 @@ To configure the frequency press:
 You can switch the directions of all buttons (lefty mode), press:
 select+start+B+left.
 
-A USB mouse will be used to output the Commodore 1351 mouse protocol
-on the Pot X and Pot Y control port inputs. The following table shows
-the mouse button mapping:
+A USB mouse will be used to output the
+[Commodore 1351](https://www.c64-wiki.com/wiki/Mouse_1351) mouse
+protocol on the Pot X and Pot Y control port inputs. The following
+table shows the mouse button mapping:
 
 | Mouse      | Control Port |
 | ---------- | ------------ |
@@ -61,7 +62,7 @@ the mouse button mapping:
 | left side  | left
 | right side | right
 
-The mouse wheel is using the [Micromys protocol](http://wiki.icomp.de/wiki/Micromys_Protocol)
+The mouse wheel is using the [Micromys protocol](http://wiki.icomp.de/wiki/Micromys_Protocol).
 Left and Right side buttons are used on the [Microsoft Intellimouse](https://en.wikipedia.org/wiki/IntelliMouse).
 
 Hardware
@@ -141,18 +142,21 @@ The following list shows which features are implemented.
 - [X] use select button for fire 3 on POT X
 - [X] support two USB joysticks with both control ports
 - [X] lefty mode
-- [ ] fix device mapping in USB Host Shield Library
-- [ ] connect to both control ports and switch joystick by magic button press
+- [X] support mouse side buttons
+- [ ] switch joystick 1,2 and mouse 1,2 with button combination
 - [ ] reconfigure any USB button to any Commodore button
 - [ ] save configuration to Arduino EEPROM https://www.arduino.cc/en/Reference/EEPROM
 - [ ] support PlayStation Classic USB controller
 - [ ] support PlayStation 3 controller
 - [ ] support PlayStation 4 controller
 - [ ] use analog joystick of a PlayStation 3 controller for POT X and POT Y
+- [ ] support analog hat button
 - [ ] support Xbox controller
 - [ ] use USB mouse for POT X and POT Y with 1351 protocol
 - [ ] support mouse wheel
-- [ ] support mouse side buttons
+- [ ] do something with Sony L1,R1
+- [ ] use keyboard as joystick
+- [ ] fix device mapping in USB Host Shield Library
 
 Links
 ------
