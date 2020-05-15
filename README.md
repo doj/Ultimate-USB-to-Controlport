@@ -32,6 +32,8 @@ directions:
 | A      | circle   | auto fire A 5Hz
 | Y      | square   | auto fire Y 3Hz
 | X      | triangle | up
+| n/a    | L1       | left
+| n/a    | R1       | right
 | L      | L2       | left
 | L      | R2       | right
 | select | select   | fire 2 on POT Y
@@ -143,10 +145,13 @@ The following list shows which features are implemented.
 - [X] support two USB joysticks with both control ports
 - [X] lefty mode
 - [X] support mouse side buttons
+- [X] support PlayStation Classic USB controller
+- [ ] the USB controller should remember the button state and count
+  how many button down pushes were made. However this is not so easy
+  when autofire is selected.
 - [ ] switch joystick 1,2 and mouse 1,2 with button combination
 - [ ] reconfigure any USB button to any Commodore button
 - [ ] save configuration to Arduino EEPROM https://www.arduino.cc/en/Reference/EEPROM
-- [ ] support PlayStation Classic USB controller
 - [ ] support PlayStation 3 controller
 - [ ] support PlayStation 4 controller
 - [ ] use analog joystick of a PlayStation 3 controller for POT X and POT Y
@@ -154,7 +159,6 @@ The following list shows which features are implemented.
 - [ ] support Xbox controller
 - [ ] use USB mouse for POT X and POT Y with 1351 protocol
 - [ ] support mouse wheel
-- [ ] do something with Sony L1,R1
 - [ ] use keyboard as joystick
 - [ ] fix device mapping in USB Host Shield Library
 
@@ -173,6 +177,9 @@ https://codebase64.org/doku.php?id=base:io_programming
 
 Information on the USB protocol:
 http://www.usbmadesimple.co.uk/ums_4.htm
+
+USB Host Shield 2.0 Library with fixes and better debuggin messages:
+https://github.com/doj/USB_Host_Shield_2.0
 
 Contact
 --------

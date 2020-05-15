@@ -28,21 +28,29 @@ class USBController : public ControlPortDeviceHandler
 
   ///@name SNES joystick button names
   ///@{
-  uint8_t BUT_X = 1; ///< Sony triangle
-  uint8_t BUT_A = 2; ///< Sony circle
-  uint8_t BUT_B = 3; ///< Sony cross
-  uint8_t BUT_Y = 4; ///< Sony square
-  uint8_t BUT_L = 5; ///< Sony L2
-  uint8_t BUT_R = 6; ///< Sony R2
-  uint8_t BUT_L1 = 7; ///< only Sony
-  uint8_t BUT_R1 = 8; ///< only Sony
-  uint8_t BUT_SELECT = 9;
-  uint8_t BUT_START  = 10;
+  static const uint8_t BUT_X = 1;  ///< Sony triangle
+  static const uint8_t BUT_A = 2;  ///< Sony circle
+  static const uint8_t BUT_B = 3;  ///< Sony cross
+  static const uint8_t BUT_Y = 4;  ///< Sony square
+  static const uint8_t BUT_L2 = 5; ///< NES L
+  static const uint8_t BUT_R2 = 6; ///< NES R
+  static const uint8_t BUT_L1 = 7; ///< only Sony
+  static const uint8_t BUT_R1 = 8; ///< only Sony
+  static const uint8_t BUT_SELECT = 9;
+  static const uint8_t BUT_START  = 10;
   ///@}
+
+  uint8_t m_lefty = 0;
+  uint8_t m_but_a = BUT_A;
+  uint8_t m_but_b = BUT_B;
+  uint8_t m_but_x = BUT_X;
+  uint8_t m_but_y = BUT_Y;
 
   uint16_t m_oldButtons = 0;
   uint8_t m_oldX = 0;
   uint8_t m_oldY = 0;
+
+  uint8_t direction(uint8_t pin);
 
 public:
   USBController(uint8_t num, ControlPortDevice *cpd) :

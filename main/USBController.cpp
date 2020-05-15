@@ -25,7 +25,6 @@ USBController::~USBController()
   debug("~contr");
 }
 
-
 void
 USBController::init() const
 {
@@ -66,6 +65,23 @@ USBController::debugAxes() const
 }
 #endif
 
+uint8_t
+USBController::direction(uint8_t pin)
+{
+  if (m_lefty)
+    {
+      if (pin == m_cpd->m_pinUp)
+	pin = m_cpd->m_pinDown;
+      else if (pin == m_cpd->m_pinDown)
+	pin = m_cpd->m_pinUp;
+      else if (pin == m_cpd->m_pinLeft)
+	pin = m_cpd->m_pinRight;
+      else if (pin == m_cpd->m_pinRight)
+	pin = m_cpd->m_pinLeft;
+    }
+  return pin;
+}
+
 void
 USBController::OnX(uint8_t x)
 {
@@ -73,25 +89,21 @@ USBController::OnX(uint8_t x)
     {
       if (isDirectionSwitchConfig())
         {
-          std::swap(m_cpd->m_pinLeft, m_cpd->m_pinRight);
-          std::swap(m_cpd->m_pinUp, m_cpd->m_pinDown);
-          std::swap(BUT_A,BUT_Y);
-          std::swap(BUT_B,BUT_X);
-          std::swap(BUT_L,BUT_R);
-          std::swap(BUT_L1,BUT_R1);
-          std::swap(BUT_SELECT,BUT_START);
           debug("lefty\n");
+	  m_lefty = ! m_lefty;
+          std::swap(m_but_a,m_but_y);
+          std::swap(m_but_b,m_but_x);
         }
       else
         {
-          m_cpd->joystick(m_cpd->m_pinLeft,   LOW);
-          m_cpd->joystick(m_cpd->m_pinRight, HIGH);
+          m_cpd->joystick(direction(m_cpd->m_pinLeft),   LOW);
+	  m_cpd->joystick(direction(m_cpd->m_pinRight), HIGH);
         }
     }
   else if (x > AXIS_CENTER + AXIS_SENSITIVITY)
     {
-      m_cpd->joystick(m_cpd->m_pinLeft,  HIGH);
-      m_cpd->joystick(m_cpd->m_pinRight, LOW);
+      m_cpd->joystick(direction(m_cpd->m_pinLeft),  HIGH);
+      m_cpd->joystick(direction(m_cpd->m_pinRight), LOW);
     }
   else
     {
@@ -109,8 +121,8 @@ USBController::OnY(uint8_t y)
 {
   if (y < AXIS_CENTER - AXIS_SENSITIVITY)
     {
-      m_cpd->joystick(m_cpd->m_pinUp,   LOW);
-      m_cpd->joystick(m_cpd->m_pinDown, HIGH);
+      m_cpd->joystick(direction(m_cpd->m_pinUp),   LOW);
+      m_cpd->joystick(direction(m_cpd->m_pinDown), HIGH);
 
       if (isAutoFireAConfig() && m_autoFireAfreq < 255)
         {
@@ -125,8 +137,8 @@ USBController::OnY(uint8_t y)
     }
   else if (y > AXIS_CENTER + AXIS_SENSITIVITY)
     {
-      m_cpd->joystick(m_cpd->m_pinUp,  HIGH);
-      m_cpd->joystick(m_cpd->m_pinDown, LOW);
+      m_cpd->joystick(direction(m_cpd->m_pinUp),  HIGH);
+      m_cpd->joystick(direction(m_cpd->m_pinDown), LOW);
 
       if (isAutoFireAConfig() && m_autoFireAfreq > 1)
         {
@@ -151,76 +163,29 @@ USBController::OnY(uint8_t y)
 }
 
 void
-USBController::OnButtonUp(uint8_t but_id)
-{
-  if (but_id == BUT_B)
-    {
-      m_cpd->joystick(m_cpd->m_pinFire, HIGH);
-    }
-  else if (but_id == BUT_X)
-    {
-      m_cpd->joystick(m_cpd->m_pinUp, HIGH);
-    }
-  else if (but_id == BUT_L)
-    {
-      m_cpd->joystick(m_cpd->m_pinLeft, HIGH);
-    }
-  else if (but_id == BUT_R)
-    {
-      m_cpd->joystick(m_cpd->m_pinRight, HIGH);
-    }
-  else if (but_id == BUT_A)
-    {
-      cancelAutoFire();
-    }
-  else if (but_id == BUT_Y)
-    {
-      cancelAutoFire();
-    }
-  else if (but_id == BUT_SELECT)
-    {
-      m_cpd->pot(m_cpd->m_pinPotX, HIGH);
-    }
-  else if (but_id == BUT_START)
-    {
-      m_cpd->pot(m_cpd->m_pinPotY, HIGH);
-    }
-
-  uint16_t mask = 1 << but_id;
-  m_button_state &= ~mask;
-
-#if USE_SERIAL
-  debugv(m_num);
-  debug("Up: ");
-  debugv(but_id);
-  debug("\n");
-#endif
-}
-
-void
 USBController::OnButtonDn(uint8_t but_id)
 {
-  if (but_id == BUT_B)
+  if (but_id == m_but_b)
     {
       m_cpd->joystick(m_cpd->m_pinFire, LOW);
     }
-  else if (but_id == BUT_X)
+  else if (but_id == m_but_x)
     {
       m_cpd->joystick(m_cpd->m_pinUp, LOW);
     }
-  else if (but_id == BUT_L)
+  else if (but_id == BUT_L1 || but_id == BUT_L2)
     {
-      m_cpd->joystick(m_cpd->m_pinLeft, LOW);
+      m_cpd->joystick(direction(m_cpd->m_pinLeft), LOW);
     }
-  else if (but_id == BUT_R)
+  else if (but_id == BUT_R1 || but_id == BUT_R2)
     {
-      m_cpd->joystick(m_cpd->m_pinRight, LOW);
+      m_cpd->joystick(direction(m_cpd->m_pinRight), LOW);
     }
-  else if (but_id == BUT_A)
+  else if (but_id == m_but_a)
     {
       startAutoFire(m_autoFireAfreq);
     }
-  else if (but_id == BUT_Y)
+  else if (but_id == m_but_y)
     {
       startAutoFire(m_autoFireYfreq);
     }
@@ -247,57 +212,127 @@ USBController::OnButtonDn(uint8_t but_id)
 }
 
 void
+USBController::OnButtonUp(uint8_t but_id)
+{
+  if (but_id == m_but_b)
+    {
+      m_cpd->joystick(m_cpd->m_pinFire, HIGH);
+    }
+  else if (but_id == m_but_x)
+    {
+      m_cpd->joystick(m_cpd->m_pinUp, HIGH);
+    }
+  else if (but_id == BUT_L1 || but_id == BUT_L2)
+    {
+      m_cpd->joystick(direction(m_cpd->m_pinLeft), HIGH);
+    }
+  else if (but_id == BUT_R1 || but_id == BUT_R2)
+    {
+      m_cpd->joystick(direction(m_cpd->m_pinRight), HIGH);
+    }
+  else if (but_id == m_but_a)
+    {
+      cancelAutoFire();
+    }
+  else if (but_id == m_but_y)
+    {
+      cancelAutoFire();
+    }
+  else if (but_id == BUT_SELECT)
+    {
+      m_cpd->pot(m_cpd->m_pinPotX, HIGH);
+    }
+  else if (but_id == BUT_START)
+    {
+      m_cpd->pot(m_cpd->m_pinPotY, HIGH);
+    }
+
+  uint16_t mask = 1 << but_id;
+  m_button_state &= ~mask;
+
+#if USE_SERIAL
+  debugv(m_num);
+  debug("Up: ");
+  debugv(but_id);
+  debug("\n");
+#endif
+}
+
+void
 USBController::parse(const uint8_t *buf, const uint8_t len)
 {
-  if (len < 7)
+  uint16_t buttons = 0;
+  uint8_t x = 0;
+  uint8_t y = 0;
+
+  // NES
+  if (len == 8)
+    {
+      x = buf[3];
+      y = buf[4];
+
+#if 0
+      // Calling Hat Switch event handler
+      const uint8_t hat = (buf[5] & 0xF);
+      if (hat != oldHat)
+	{
+	  joyEvents->OnHatSwitch(hat);
+	  oldHat = hat;
+	}
+#endif
+
+      buttons = buf[6] << 4;
+      buttons |= (buf[5] >> 4);
+    }
+  // Sony
+  else if (len == 2)
+    {
+      buttons = ((buf[1] & 3) << 8) | buf[0];
+
+      y = 0x7f;
+      if ((buf[1] & 0x30) == 0x00)
+	y = 0;
+      else if ((buf[1] & 0x30) == 0x20)
+	y = 0xff;
+
+      x = 0x7f;
+      if ((buf[1] & 0x0C) == 0x00)
+	x = 0;
+      else if ((buf[1] & 0x0C) == 0x08)
+	x = 0xff;
+    }
+  else
     {
       debugv(len,DEC);
       debug("contr len");
       return;
     }
 
-  if (buf[3] != m_oldX)
+  if (x != m_oldX)
     {
-      m_oldX = buf[3];
-      OnX(m_oldX);
+      OnX(m_oldX = x);
     }
 
-  if (buf[4] != m_oldY)
+  if (y != m_oldY)
     {
-      m_oldY = buf[4];
-      OnY(m_oldY);
+      OnY(m_oldY = y);
     }
 
-#if 0
-  // Calling Hat Switch event handler
-  const uint8_t hat = (buf[5] & 0xF);
-  if (hat != oldHat)
-    {
-      joyEvents->OnHatSwitch(hat);
-      oldHat = hat;
-    }
-#endif
-
-  uint16_t buttons = (0x0000 | buf[6]);
-  buttons <<= 4;
-  buttons |= (buf[5] >> 4);
   const uint16_t changes = (buttons ^ m_oldButtons);
-
-  // Calling Button Event Handler for every button changed
   if (changes)
     {
       for (uint8_t i = 0; i < 0x0C; i++)
-        {
-          uint16_t mask = (0x0001 << i);
+	{
+	  uint16_t mask = (0x0001 << i);
 
-          if ((mask & changes) > 0)
-            {
-              if ((buttons & mask) > 0)
-                OnButtonDn(i + 1);
-              else
-                OnButtonUp(i + 1);
-            }
-        }
+	  if ((mask & changes) > 0)
+	    {
+	      if ((buttons & mask) > 0)
+		OnButtonDn(i + 1);
+	      else
+		OnButtonUp(i + 1);
+	    }
+	}
       m_oldButtons = buttons;
     }
 }
