@@ -61,6 +61,6 @@
 #define AXIS_CENTER 0x7f
 
 /// frequency in Hz of auto fire on button A
-#define AUTO_FIRE_A_FREQ 5
+#define AUTO_FIRE_A_FREQ 10
 /// frequency in Hz of auto fire on button Y
-#define AUTO_FIRE_Y_FREQ 3
+#define AUTO_FIRE_Y_FREQ 5

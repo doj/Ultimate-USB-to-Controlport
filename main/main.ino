@@ -38,14 +38,17 @@ Timer_t timer;
 
 static USB Usb;
 static USBHub UsbHub(&Usb);
-static HIDUniversal uni1(&Usb);
-static HIDUniversal uni2(&Usb);
-static HIDUniversal uni3(&Usb);
-static HIDUniversal uni4(&Usb);
-static ControlPortDevice cpd1(1);
-static ControlPortDevice cpd2(2);
-static ControlPortDevice cpd3(3);
-static ControlPortDevice cpd4(4);
+#define X(n) \
+static HIDUniversal uni ## n (&Usb); \
+static ControlPortDevice cpd ## n (n);
+// support up to 6 devices: 2*(joystick+keyboard+mouse)
+X(1);
+X(2);
+X(3);
+X(4);
+X(5);
+X(6);
+#undef X
 
 // the setup function runs once upon startup
 void setup()
@@ -65,22 +68,17 @@ void setup()
 
   delay(200);
 
-  if (! uni1.SetReportParser(1, &cpd1))
-    {
-      debug("!1");
-    }
-  if (! uni2.SetReportParser(2, &cpd2))
-    {
-      debug("!2");
-    }
-  if (! uni3.SetReportParser(3, &cpd3))
-    {
-      debug("!3");
-    }
-  if (! uni4.SetReportParser(4, &cpd4))
-    {
-      debug("!4");
-    }
+#define X(n) \
+  if (! uni ## n.SetReportParser(n, & cpd ## n)) { \
+    debug("!" #n); \
+  }
+  X(1);
+  X(2);
+  X(3);
+  X(4);
+  X(5);
+  X(6);
+#undef X
 }
 
 // the loop function runs over and over again forever

@@ -8,6 +8,14 @@ void debugs(const char *str)
   Serial.print(str);
 }
 
+void debugf(const char *str)
+{
+  while(*str)
+    {
+      Serial.print(pgm_read_byte(str++));
+    }
+}
+
 void debugv(uint8_t v, const uint8_t mode)
 {
   static const char *hexdigit = "0123456789abcdef";

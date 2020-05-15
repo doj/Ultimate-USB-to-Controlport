@@ -29,8 +29,8 @@ directions:
 | NES    | Sony     | Control Port |
 | ------ | -------- | ------------
 | B      | cross    | fire
-| A      | circle   | auto fire A 5Hz
-| Y      | square   | auto fire Y 3Hz
+| A      | circle   | auto fire A, 10 Hz
+| Y      | square   | auto fire Y, 5 Hz
 | X      | triangle | up
 | n/a    | L1       | left
 | n/a    | R1       | right
@@ -39,7 +39,7 @@ directions:
 | select | select   | fire 2 on POT Y
 | start  | start    | fire 3 on POT X
 
-You can configure the frequency of the auto fire from 1Hz to 255Hz.
+You can configure the frequency of the auto fire from 1 Hz to 255 Hz.
 To configure the frequency press:
 - select+start+A+up : increase the frequency of auto fire A
 - select+start+A+down : decrease the frequency of auto fire A
@@ -152,8 +152,8 @@ The following list shows which features are implemented.
 - [X] use X button for up direction
 - [X] use L button for left
 - [X] use R button for right
-- [X] use A button for auto fire with 5 Hz
-- [X] use Y button for auto fire with 3 Hz
+- [X] use A button for auto fire
+- [X] use Y button for auto fire
 - [X] configure auto fire frequency
 - [X] use start button for fire 2 on POT Y
 - [X] use select button for fire 3 on POT X
@@ -174,8 +174,10 @@ The following list shows which features are implemented.
 - [ ] support analog hat button
 - [ ] support Xbox controller
 - [ ] use USB mouse for POT X and POT Y with 1351 protocol
-- [ ] support mouse wheel
+- [ ] support 1351 mouse wheel
 - [ ] fix device mapping in USB Host Shield Library
+- [ ] MIDI input
+- [ ] burst fire mode
 
 Controllers
 ------------
@@ -194,6 +196,12 @@ names like kiwitata, retroflag.
 - generic 3 button + wheel USB mouse
 
 - generic USB keyboard
+
+Serial Debug Console
+---------------------
+By default the serial debug console is enabled and uses 115200
+baud. See the config.h file to configure the baud rate or to disable
+the debug console output.
 
 Links
 ------
