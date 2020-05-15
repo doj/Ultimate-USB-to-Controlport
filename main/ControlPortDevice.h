@@ -12,6 +12,8 @@ private:
   static const uint8_t JOYSTICK2 = 2;
   static const uint8_t MOUSE1 = 4;
   static const uint8_t MOUSE2 = 8;
+  static const uint8_t KEYBOARD1 = 0x10;
+  static const uint8_t KEYBOARD2 = 0x20;
   static uint8_t s_used;
 
   const uint8_t m_num;
@@ -33,6 +35,7 @@ public:
 
   void initMouse();
   void initJoystick();
+  void initKeyboard();
 
 #if defined(USB_HOST_SHIELD_VERSION) && (USB_HOST_SHIELD_VERSION >= 0x010303)
   void Release() override;

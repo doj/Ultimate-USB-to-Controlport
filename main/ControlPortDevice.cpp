@@ -2,7 +2,7 @@
 
 #include "ControlPortDevice.h"
 #include "Commodore1351.h"
-#include "USBController.h"
+#include "USBKeyboard.h"
 #include "debug.h"
 
 void joystick(const uint8_t pin, const uint8_t state);
@@ -74,7 +74,41 @@ ControlPortDevice::initJoystick()
       m_handler = new USBController(2,this);
       return;
     }
-  debug("!initJoystick");
+  debug("!initJoy");
+}
+
+void
+ControlPortDevice::initKeyboard()
+{
+  if (! (s_used & KEYBOARD1))
+    {
+      m_used  = KEYBOARD1;
+      s_used |= KEYBOARD1;
+      m_pinUp    = CP1_UP;
+      m_pinDown  = CP1_DOWN;
+      m_pinLeft  = CP1_LEFT;
+      m_pinRight = CP1_RIGHT;
+      m_pinFire  = CP1_FIRE;
+      m_pinPotX  = CP1_POTX;
+      m_pinPotY  = CP1_POTY;
+      m_handler = new USBKeyboard(1,this);
+      return;
+    }
+  if (! (s_used & KEYBOARD2))
+    {
+      m_used  = KEYBOARD2;
+      s_used |= KEYBOARD2;
+      m_pinUp    = CP2_UP;
+      m_pinDown  = CP2_DOWN;
+      m_pinLeft  = CP2_LEFT;
+      m_pinRight = CP2_RIGHT;
+      m_pinFire  = CP2_FIRE;
+      m_pinPotX  = CP2_POTX;
+      m_pinPotY  = CP2_POTY;
+      m_handler = new USBKeyboard(2,this);
+      return;
+    }
+  debug("!initKey");
 }
 
 #if defined(USB_HOST_SHIELD_VERSION) && (USB_HOST_SHIELD_VERSION >= 0x010303)
@@ -92,16 +126,39 @@ ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
 {
   (void)hid;
   (void)is_rpt_id;
+
+#if 0
+  debugs("parse");
+  for(int i = 0; i < len; ++i)
+    {
+      debugs(" ");
+      debugv(buf[i]);
+    }
+  debugs("\n");
+#endif
+
   if (! m_handler)
     {
       if (len >= 3 && len <= 5)
 	{
 	  initMouse();
 	}
-      if (len == 8 ||
-	  len == 2)
+      else if (len == 2)
 	{
 	  initJoystick();
+	}
+      if (len == 8)
+	{
+	  if (buf[0] == 0x01 &&
+	      buf[1] == 0x7f &&
+	      buf[2] == 0x7f)
+	    {
+	      initJoystick();
+	    }
+	  else if (buf[1] == 0x00)
+	    {
+	      initKeyboard();
+	    }
 	}
     }
   if (m_handler)

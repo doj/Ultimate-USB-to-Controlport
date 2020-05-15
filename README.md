@@ -35,7 +35,7 @@ directions:
 | n/a    | L1       | left
 | n/a    | R1       | right
 | L      | L2       | left
-| L      | R2       | right
+| R      | R2       | right
 | select | select   | fire 2 on POT Y
 | start  | start    | fire 3 on POT X
 
@@ -66,6 +66,21 @@ table shows the mouse button mapping:
 
 The mouse wheel is using the [Micromys protocol](http://wiki.icomp.de/wiki/Micromys_Protocol).
 Left and Right side buttons are used on the [Microsoft Intellimouse](https://en.wikipedia.org/wiki/IntelliMouse).
+
+The table below shows how keyboard keys are mapped to the control
+port:
+
+| Key | Control Port |
+| --- | ------------ |
+| up, num 8, w, i | up
+| down, num 2, s, k | down
+| left, 4, a, j | left
+| right, 6, d, l | right
+| ins, space, ~, enter, F1, b | fire (gamepad B)
+| y | auto fire (gamepad Y)
+| x | up (gamepad X)
+| F2 | fire 2 on POT Y (gamepad select)
+| F3 | fire 3 on POT X (gamepad start)
 
 Hardware
 ---------
@@ -146,6 +161,7 @@ The following list shows which features are implemented.
 - [X] lefty mode
 - [X] support mouse side buttons
 - [X] support PlayStation Classic USB controller
+- [X] use keyboard as joystick
 - [ ] the USB controller should remember the button state and count
   how many button down pushes were made. However this is not so easy
   when autofire is selected.
@@ -159,8 +175,25 @@ The following list shows which features are implemented.
 - [ ] support Xbox controller
 - [ ] use USB mouse for POT X and POT Y with 1351 protocol
 - [ ] support mouse wheel
-- [ ] use keyboard as joystick
 - [ ] fix device mapping in USB Host Shield Library
+
+Controllers
+------------
+The following controllers have been tested with the software:
+
+- [Sony Playstation Classic](https://en.wikipedia.org/wiki/PlayStation_Classic) USB controller.
+  ![Sony Playstation Classic](https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/PlayStation_Classic_Konsole_%2B_Controller.jpg/640px-PlayStation_Classic_Konsole_%2B_Controller.jpg)
+
+- iNNEXT SNES USB controller, which you also find under other brand
+names like kiwitata, retroflag.
+  ![SNES USB controller](https://www.picclickimg.com/00/s/MTAwMVgxMDAw/z/sV0AAOSwYY1enxD7/$/2x-iNNEXT-SNES-USB-Wired-Game-Controller-Gamepad-_57.jpg)
+
+- [Microsoft Intellimouse optical USB](https://en.wikipedia.org/wiki/IntelliMouse).
+  ![intellimouse](https://images.fastcompany.net/image/upload/w_596,c_limit,q_auto:best,f_auto/wp-cms/uploads/sites/4/2018/01/i-2-the-intellimouse-abides.jpg)
+
+- generic 3 button + wheel USB mouse
+
+- generic USB keyboard
 
 Links
 ------

@@ -26,6 +26,15 @@ class USBController : public ControlPortDeviceHandler
   uint8_t m_autoFireAfreq = AUTO_FIRE_A_FREQ;
   uint8_t m_autoFireYfreq = AUTO_FIRE_Y_FREQ;
 
+  uint8_t m_lefty = 0;
+
+  uint16_t m_oldButtons = 0;
+  uint8_t m_oldX = 0;
+  uint8_t m_oldY = 0;
+
+  uint8_t direction(uint8_t pin);
+
+protected:
   ///@name SNES joystick button names
   ///@{
   static const uint8_t BUT_X = 1;  ///< Sony triangle
@@ -40,17 +49,10 @@ class USBController : public ControlPortDeviceHandler
   static const uint8_t BUT_START  = 10;
   ///@}
 
-  uint8_t m_lefty = 0;
   uint8_t m_but_a = BUT_A;
   uint8_t m_but_b = BUT_B;
   uint8_t m_but_x = BUT_X;
   uint8_t m_but_y = BUT_Y;
-
-  uint16_t m_oldButtons = 0;
-  uint8_t m_oldX = 0;
-  uint8_t m_oldY = 0;
-
-  uint8_t direction(uint8_t pin);
 
 public:
   USBController(uint8_t num, ControlPortDevice *cpd) :

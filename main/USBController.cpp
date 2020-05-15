@@ -59,9 +59,11 @@ USBController::startAutoFire(uint8_t freq)
 void
 USBController::debugAxes() const
 {
+#if 0
   debug("x "); debugv(m_x);
   debug(" y ");debugv(m_y);
   debug("\n");
+#endif
 }
 #endif
 
@@ -201,7 +203,7 @@ USBController::OnButtonDn(uint8_t but_id)
   uint16_t mask = 1 << but_id;
   m_button_state |= mask;
 
-#if USE_SERIAL
+#if USE_SERIAL && 0
   debugv(m_num);
   debug("Dn: ");
   debugv(but_id);
@@ -250,7 +252,7 @@ USBController::OnButtonUp(uint8_t but_id)
   uint16_t mask = 1 << but_id;
   m_button_state &= ~mask;
 
-#if USE_SERIAL
+#if USE_SERIAL && 0
   debugv(m_num);
   debug("Up: ");
   debugv(but_id);
