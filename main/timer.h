@@ -1,4 +1,4 @@
-// -*- c-basic-offset: 2; tab-width: 2; indent-tabs-mode: nil; mode: c++ -*-
+// -*- c-basic-offset: 4; tab-width: 4; indent-tabs-mode: nil; mode: c++ -*-
 /** @file
    arduino-timer - library for delaying function calls
 
@@ -97,6 +97,28 @@ class Timer {
         task = (Task)NULL;
     }
 
+    /**
+     * update the interval of a repeating Task.
+     * @param task Task to modify
+     * @param interval new interval in ticks.
+     * @return true if @p task was modifid.
+     * @return false if @p task was not found.
+     */
+    bool
+    updateInterval(const Task &task, unsigned long interval)
+    {
+        if (!task) return false;
+
+        for (size_t i = 0; i < max_tasks; ++i) {
+            struct task * const t = &tasks[i];
+            if (t->handler && (t->id ^ task) == (uintptr_t)t) {
+                t->expires = interval;
+                return true;
+            }
+        }
+        return false;
+    }
+
     /* Ticks the timer forward - call this function in loop() */
     unsigned long
     tick()
@@ -130,12 +152,12 @@ class Timer {
     size_t ctr;
 
     struct task {
-        handler_t handler; /* task handler callback func */
-        void *opaque; /* argument given to the callback handler */
-        unsigned long start,
-                      expires; /* when the task expires */
-        size_t repeat, /* repeat task */
-               id;
+        handler_t handler; ///< task handler callback func
+        void *opaque;      ///< argument given to the callback handler
+        size_t id;
+        unsigned long start; ///< tick when task was created
+        unsigned long expires; ///< number of ticks when the task is executed
+        bool repeat; ///< if true, the task repeats after executing
     } tasks[max_tasks];
 
     inline
@@ -146,7 +168,7 @@ class Timer {
         task->opaque = NULL;
         task->start = 0;
         task->expires = 0;
-        task->repeat = 0;
+        task->repeat = false;
         task->id = 0;
     }
 
@@ -174,7 +196,7 @@ class Timer {
     inline
     struct task *
     add_task(unsigned long start, unsigned long expires,
-             handler_t h, void *opaque, bool repeat = 0)
+             handler_t h, void *opaque, bool repeat = false)
     {
         struct task * const slot = next_task_slot();
 
