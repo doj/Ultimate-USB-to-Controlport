@@ -10,10 +10,20 @@ void debugs(const char *str)
 
 void debugf(const char *str)
 {
-  while(*str)
+  char buf[2];
+  buf[1]=0;
+  while(1)
     {
-      Serial.print(pgm_read_byte(str++));
+      buf[0] = pgm_read_byte(str++);
+      if (! buf[0])
+        return;
+      Serial.print(buf);
     }
+}
+
+void debugnl()
+{
+  debugs("\n");
 }
 
 void debugv(uint8_t v, const uint8_t mode)
