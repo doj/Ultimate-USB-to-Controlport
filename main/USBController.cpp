@@ -300,7 +300,7 @@ USBController::parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const u
   (void)bAddress;
   (void)epAddress;
 
-#if 1
+#if 0
   debugl(this);
   debugs(" parse");
   for(int i = 0; i < len; ++i)

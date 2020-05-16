@@ -143,6 +143,12 @@ If you want to change the Arduino pin assignments, change the config.h file.
 If you have a clone USB Host Shield, the following article may help
 you fix it: https://esp8266-notes.blogspot.com/2017/08/defective-arduino-usb-host-shield-boards.html
 
+The following picture shows the development prototype with an Arduino
+Uno, the USB Host Shield, a 4 port USB hub and connections to both
+Commodore 64 control ports.
+
+![prototype](https://raw.githubusercontent.com/doj/Ultimate-USB-to-Controlport/master/prototype.jpg)
+
 Feature Implementation Status
 ------------------------------
 The following list shows which features are implemented.
@@ -185,13 +191,16 @@ Controllers
 The following controllers have been tested with the software:
 
 - [Sony Playstation Classic](https://en.wikipedia.org/wiki/PlayStation_Classic) USB controller.
+
   ![Sony Playstation Classic](https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/PlayStation_Classic_Konsole_%2B_Controller.jpg/640px-PlayStation_Classic_Konsole_%2B_Controller.jpg)
 
 - iNNEXT SNES USB controller, which you also find under other brand
 names like kiwitata, retroflag.
+
   ![SNES USB controller](https://www.picclickimg.com/00/s/MTAwMVgxMDAw/z/sV0AAOSwYY1enxD7/$/2x-iNNEXT-SNES-USB-Wired-Game-Controller-Gamepad-_57.jpg)
 
 - [Microsoft Intellimouse optical USB](https://en.wikipedia.org/wiki/IntelliMouse).
+
   ![intellimouse](https://images.fastcompany.net/image/upload/w_596,c_limit,q_auto:best,f_auto/wp-cms/uploads/sites/4/2018/01/i-2-the-intellimouse-abides.jpg)
 
 - [Apple Mighty Mouse](https://en.wikipedia.org/wiki/Apple_Mighty_Mouse) wired
@@ -222,7 +231,7 @@ https://codebase64.org/doku.php?id=base:io_programming
 Information on the USB protocol:
 http://www.usbmadesimple.co.uk/ums_4.htm
 
-USB Host Shield 2.0 Library with fixes and better debuggin messages:
+USB Host Shield 2.0 Library with fixes and better debugging messages:
 https://github.com/doj/USB_Host_Shield_2.0
 
 Contact
