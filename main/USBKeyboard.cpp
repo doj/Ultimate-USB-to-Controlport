@@ -2,6 +2,7 @@
 
 #include "USBKeyboard.h"
 #include "debug.h"
+#include <usbhid.h>
 
 bool
 contains(const uint8_t *arr, const uint8_t sc)
@@ -15,15 +16,19 @@ contains(const uint8_t *arr, const uint8_t sc)
 }
 
 void
-USBKeyboard::parse(const uint8_t *buf, const uint8_t len)
+USBKeyboard::parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const uint8_t bAddress, const uint8_t epAddress)
 {
+  m_hid = hid;
+  (void)bAddress;
+  (void)epAddress;
+
 #if 0
   for(int i = 0; i < len; ++i)
     {
       debugs(" ");
       debugv(buf[i]);
     }
-  debugs("\n");
+  debugnl();
 #endif
 
   if (len < 8)
@@ -116,4 +121,27 @@ USBKeyboard::key(const uint8_t sc, const bool down)
     OnButtonDn(but);
   else
     OnButtonUp(but);
+}
+
+void
+USBKeyboard::setLED()
+{
+  if (! m_hid)
+    return;
+  m_hid->SetReport(/*ep=*/0,
+		   /*iface=*/0/*hid->GetIface()*/,
+		   /*report_type=*/2,
+		   /*report_id=*/0,
+		   /*nbytes=*/1,
+		   &m_led);
+}
+
+void
+USBKeyboard::fireCB(bool on)
+{
+  if (on)
+    m_led |= 1;
+  else
+    m_led &= ~1;
+  setLED();
 }

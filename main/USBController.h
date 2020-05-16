@@ -21,7 +21,7 @@ class USBController : public ControlPortDeviceHandler
   uint16_t m_button_state = 0;
 
   Timer_t::Task m_autoFireTask = 0;
-  uint8_t m_autoFireState = 0;
+  bool m_autoFireState = false;
 
   uint8_t m_autoFireAfreq = AUTO_FIRE_A_FREQ;
   uint8_t m_autoFireYfreq = AUTO_FIRE_Y_FREQ;
@@ -54,6 +54,9 @@ protected:
   uint8_t m_but_x = BUT_X;
   uint8_t m_but_y = BUT_Y;
 
+  virtual void fireCB(bool on);
+  void fire(bool on);
+
 public:
   USBController(uint8_t num, ControlPortDevice *cpd) :
     ControlPortDeviceHandler(cpd),
@@ -84,6 +87,8 @@ public:
   }
   void cancelAutoFire();
   void startAutoFire(uint8_t freq);
+  void autoFireCB();
+  void updateAutoFireFreq(uint8_t freq);
 
-  void parse(const uint8_t *buf, const uint8_t len) override;
+  void parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const uint8_t bAddress, const uint8_t epAddress) override;
 };

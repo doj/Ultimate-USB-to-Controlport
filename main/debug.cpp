@@ -3,12 +3,14 @@
 #include "debug.h"
 
 #if USE_SERIAL
-void debugs(const char *str)
+void
+debugs(const char *str)
 {
   Serial.print(str);
 }
 
-void debugf(const char *str)
+void
+debugf(const char *str)
 {
   char buf[2];
   buf[1]=0;
@@ -21,14 +23,17 @@ void debugf(const char *str)
     }
 }
 
-void debugnl()
+void
+debugnl()
 {
   debugs("\n");
 }
 
-void debugv(uint8_t v, const uint8_t mode)
+static const char *hexdigit = "0123456789abcdef";
+
+void
+debugv(uint8_t v, const uint8_t mode)
 {
-  static const char *hexdigit = "0123456789abcdef";
   char buf[4];
   if (mode == HEX)
     {
@@ -56,5 +61,17 @@ void debugv(uint8_t v, const uint8_t mode)
       buf[0] = hexdigit[v % 10];
       Serial.print(buf);
     }
+}
+
+void
+debugl(uintptr_t u)
+{
+  char buf[5];
+  buf[0] = hexdigit[(u >> 12) & 15];
+  buf[1] = hexdigit[(u >>  8) & 15];
+  buf[2] = hexdigit[(u >>  4) & 15];
+  buf[3] = hexdigit[u & 15];
+  buf[4] = 0;
+  Serial.print(buf);
 }
 #endif

@@ -12,6 +12,8 @@ void debugf(const char*);
 void debugv(uint8_t v, uint8_t mode = HEX);
 /// print a newline character to the serial console.
 void debugnl();
+void debugl(uintptr_t u);
+inline void debugl(const void *p) { debugl((uintptr_t)p); }
 #define debug(str) debugf(PSTR(str))
 #else
 #define debug(str)

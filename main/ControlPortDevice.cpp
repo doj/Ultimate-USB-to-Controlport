@@ -12,6 +12,11 @@ uint8_t ControlPortDevice::s_used = 0;
 void
 ControlPortDevice::initMouse()
 {
+#if 0
+  debugl(this);
+  debug("initMouse");
+  debugnl();
+#endif
   if (! (s_used & MOUSE1))
     {
       m_used  = MOUSE1;
@@ -46,6 +51,11 @@ ControlPortDevice::initMouse()
 void
 ControlPortDevice::initJoystick()
 {
+#if 0
+  debugl(this);
+  debug("initJoy");
+  debugnl();
+#endif
   if (! (s_used & JOYSTICK1))
     {
       m_used  = JOYSTICK1;
@@ -80,6 +90,11 @@ ControlPortDevice::initJoystick()
 void
 ControlPortDevice::initKeyboard()
 {
+#if 0
+  debugl(this);
+  debug("initKey");
+  debugnl();
+#endif
   if (! (s_used & KEYBOARD1))
     {
       m_used  = KEYBOARD1;
@@ -122,8 +137,15 @@ ControlPortDevice::Release()
 #endif
 
 void
+#if defined(USB_HOST_SHIELD_VERSION) && (USB_HOST_SHIELD_VERSION >= 0x010303)
+ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf, uint8_t bAddress, uint8_t epAddress)
+{
+#else
 ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
 {
+  uint8_t bAddress = 0;
+  uint8_t epAddress = 0;
+#endif
   (void)hid;
   (void)is_rpt_id;
 
@@ -134,7 +156,7 @@ ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
       debugs(" ");
       debugv(buf[i]);
     }
-  debugs("\n");
+  debugnl();
 #endif
 
   if (! m_handler)
@@ -163,7 +185,7 @@ ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
     }
   if (m_handler)
     {
-      m_handler->parse(buf, len);
+      m_handler->parse(buf, len, hid, bAddress, epAddress);
     }
 }
 

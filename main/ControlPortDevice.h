@@ -17,6 +17,7 @@ private:
   static uint8_t s_used;
 
   const uint8_t m_num;
+
   ControlPortDeviceHandler *m_handler = NULL;
   uint8_t m_used = 0;
 public:
@@ -39,8 +40,10 @@ public:
 
 #if defined(USB_HOST_SHIELD_VERSION) && (USB_HOST_SHIELD_VERSION >= 0x010303)
   void Release() override;
-#endif
+  void Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf, uint8_t bAddress, uint8_t epAddress) override;
+#else
   void Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf) override;
+#endif
 
   void pot(const uint8_t pin, const uint8_t state) const;
   void joystick(const uint8_t pin, const uint8_t state) const;

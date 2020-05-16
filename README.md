@@ -162,6 +162,7 @@ The following list shows which features are implemented.
 - [X] support mouse side buttons
 - [X] support PlayStation Classic USB controller
 - [X] use keyboard as joystick
+- [X] set keyboard numlock LED for each fire event
 - [ ] the USB controller should remember the button state and count
   how many button down pushes were made. However this is not so easy
   when autofire is selected.

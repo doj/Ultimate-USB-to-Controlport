@@ -5,31 +5,21 @@
 #include "ControlPortDevice.h"
 #include "utility.h"
 
-///@name auto fire feature
-///@{
 void joystick(const uint8_t pin, const uint8_t state);
-/// \todo move this into the USBController class, then we can move joystick() in there as well.
-bool
-autoFireCB(void *arg)
-{
-  uint8_t *state = (uint8_t*)arg;
-  *state ^= 0x80;
-  joystick(*state & 0x7f, *state & 0x80);
-  return true;
-}
-///@}
 
 USBController::~USBController()
 {
-  debugv(m_num);
-  debug("~contr");
 }
 
 void
 USBController::init() const
 {
+#if 0
   debugv(m_num);
-  debug("contr init");
+  debug(" contr init ");
+  debugl(this);
+  debugnl();
+#endif
   m_cpd->joystick(m_cpd->m_pinUp,    HIGH);
   m_cpd->joystick(m_cpd->m_pinDown,  HIGH);
   m_cpd->joystick(m_cpd->m_pinLeft,  HIGH);
@@ -39,20 +29,53 @@ USBController::init() const
   m_cpd->pot(m_cpd->m_pinPotX, HIGH);
 }
 
+bool
+autoFireCB(void *arg)
+{
+  reinterpret_cast<USBController*>(arg)->autoFireCB();
+  return true;
+}
+
+void
+USBController::autoFireCB()
+{
+  m_autoFireState = ! m_autoFireState;
+  fire(m_autoFireState);
+}
+
 void
 USBController::cancelAutoFire()
 {
-  m_cpd->joystick(m_cpd->m_pinFire, HIGH);
+  fire(false);
   timer.cancel(m_autoFireTask);
+}
+
+inline unsigned long timerInterval(uint8_t freq)
+{
+  return 1000/2/freq;
 }
 
 void
 USBController::startAutoFire(uint8_t freq)
 {
   timer.cancel(m_autoFireTask);
-  m_autoFireState = m_cpd->m_pinFire;
-  m_cpd->joystick(m_cpd->m_pinFire, LOW);
-  m_autoFireTask = timer.every(1000/2/freq, autoFireCB, &m_autoFireState);
+  m_autoFireState = true;
+  fire(true);
+  m_autoFireTask = timer.every(timerInterval(freq), ::autoFireCB, this);
+}
+
+void
+USBController::updateAutoFireFreq(uint8_t freq)
+{
+  if (m_autoFireTask)
+    {
+      if (! timer.updateInterval(m_autoFireTask, timerInterval(freq)))
+	{
+	  debug("failed autofire freq ");
+	  debugv(freq,DEC);
+	  debugnl();
+	}
+    }
 }
 
 #if USE_SERIAL
@@ -62,7 +85,7 @@ USBController::debugAxes() const
 #if 0
   debug("x "); debugv(m_x);
   debug(" y ");debugv(m_y);
-  debug("\n");
+  debugnl();
 #endif
 }
 #endif
@@ -129,12 +152,18 @@ USBController::OnY(uint8_t y)
       if (isAutoFireAConfig() && m_autoFireAfreq < 255)
         {
           ++m_autoFireAfreq;
-          debug("auto fire A "); debugv(m_autoFireAfreq);
-        }
+          debug("auto fire A ");
+	  debugv(m_autoFireAfreq);
+	  debugnl();
+	  updateAutoFireFreq(m_autoFireAfreq);
+	}
       if (isAutoFireYConfig() && m_autoFireYfreq < 255)
         {
           ++m_autoFireYfreq;
-          debug("auto fire Y "); debugv(m_autoFireYfreq);
+          debug("auto fire Y ");
+	  debugv(m_autoFireYfreq);
+	  debugnl();
+	  updateAutoFireFreq(m_autoFireYfreq);
         }
     }
   else if (y > AXIS_CENTER + AXIS_SENSITIVITY)
@@ -145,12 +174,18 @@ USBController::OnY(uint8_t y)
       if (isAutoFireAConfig() && m_autoFireAfreq > 1)
         {
           --m_autoFireAfreq;
-          debug("auto fire A "); debugv(m_autoFireAfreq);
+          debug("auto fire A ");
+	  debugv(m_autoFireAfreq);
+	  debugnl();
+	  updateAutoFireFreq(m_autoFireAfreq);
         }
       if (isAutoFireYConfig() && m_autoFireYfreq > 1)
         {
           --m_autoFireYfreq;
-          debug("auto fire Y "); debugv(m_autoFireYfreq);
+          debug("auto fire Y ");
+	  debugv(m_autoFireYfreq);
+	  debugnl();
+	  updateAutoFireFreq(m_autoFireYfreq);
         }
     }
   else
@@ -169,7 +204,7 @@ USBController::OnButtonDn(uint8_t but_id)
 {
   if (but_id == m_but_b)
     {
-      m_cpd->joystick(m_cpd->m_pinFire, LOW);
+      fire(true);
     }
   else if (but_id == m_but_x)
     {
@@ -209,7 +244,7 @@ USBController::OnButtonDn(uint8_t but_id)
   debugv(but_id);
   debug(" ");
   debugv(m_cpd->m_pinUp);
-  debug("\n");
+  debugnl();
 #endif
 }
 
@@ -218,7 +253,7 @@ USBController::OnButtonUp(uint8_t but_id)
 {
   if (but_id == m_but_b)
     {
-      m_cpd->joystick(m_cpd->m_pinFire, HIGH);
+      fire(false);
     }
   else if (but_id == m_but_x)
     {
@@ -256,13 +291,28 @@ USBController::OnButtonUp(uint8_t but_id)
   debugv(m_num);
   debug("Up: ");
   debugv(but_id);
-  debug("\n");
+  debugnl();
 #endif
 }
 
 void
-USBController::parse(const uint8_t *buf, const uint8_t len)
+USBController::parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const uint8_t bAddress, const uint8_t epAddress)
 {
+  (void)hid;
+  (void)bAddress;
+  (void)epAddress;
+
+#if 1
+  debugl(this);
+  debugs(" parse");
+  for(int i = 0; i < len; ++i)
+    {
+      debugs(" ");
+      debugv(buf[i]);
+    }
+  debugnl();
+#endif
+
   uint16_t buttons = 0;
   uint8_t x = 0;
   uint8_t y = 0;
@@ -337,4 +387,17 @@ USBController::parse(const uint8_t *buf, const uint8_t len)
 	}
       m_oldButtons = buttons;
     }
+}
+
+void
+USBController::fireCB(bool on)
+{
+  (void)on;
+}
+
+void
+USBController::fire(bool on)
+{
+  m_cpd->joystick(m_cpd->m_pinFire, on ? LOW : HIGH);
+  fireCB(on);
 }

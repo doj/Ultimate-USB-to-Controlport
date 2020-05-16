@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 class ControlPortDevice;
+class USBHID;
 
 class ControlPortDeviceHandler
 {
@@ -14,5 +15,5 @@ public:
     m_cpd(cpd)
   {}
   virtual ~ControlPortDeviceHandler() {}
-  virtual void parse(const uint8_t *buf, const uint8_t len) = 0;
+  virtual void parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const uint8_t bAddress, const uint8_t epAddress) = 0;
 };

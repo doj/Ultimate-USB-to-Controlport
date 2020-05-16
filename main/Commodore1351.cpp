@@ -6,8 +6,6 @@
 
 Commodore1351::~Commodore1351()
 {
-  debugv(m_num);
-  debug("~mouse");
 }
 
 static void mouse1_irq();
@@ -34,8 +32,10 @@ mouse2_irq()
 void
 Commodore1351::init()
 {
+#if 0
   debugv(m_num);
-  debug("mouse init");
+  debug("mouse init\n");
+#endif
   if (m_num == 1)
     {
       mouse1 = this;
@@ -46,7 +46,7 @@ Commodore1351::init()
     }
   else
     {
-      debug("bad mouse num");
+      debug("bad mouse num\n");
       return;
     }
   m_cpd->joystick(m_cpd->m_pinUp,    HIGH);
@@ -137,15 +137,20 @@ Commodore1351::mouse(const uint8_t pin, const uint8_t state)
     }
 }
 
-void Commodore1351::parse(const uint8_t *buf, uint8_t const len)
+void
+Commodore1351::parse(const uint8_t *buf, uint8_t const len, USBHID *hid, const uint8_t bAddress, const uint8_t epAddress)
 {
+  (void)hid;
+  (void)bAddress;
+  (void)epAddress;
+
 #if 0
   for(int i = 0; i < len; ++i)
     {
       debugv(buf[i]);
       debug(" ");
     }
-  debug("\n");
+  debugnl();
 #endif
 
   if (len < 3 || len > 5)
@@ -153,7 +158,7 @@ void Commodore1351::parse(const uint8_t *buf, uint8_t const len)
       debugv(m_num);
       debug("mouse usb len:");
       debugv(len);
-      debug("\n");
+      debugnl();
       return;
     }
 
@@ -198,7 +203,8 @@ void Commodore1351::parse(const uint8_t *buf, uint8_t const len)
     }
 }
 
-void Commodore1351::move(const int8_t x, const int8_t y)
+void
+Commodore1351::move(const int8_t x, const int8_t y)
 {
   m_x += x;
   if (m_x < 63)
@@ -230,5 +236,5 @@ void Commodore1351::move(const int8_t x, const int8_t y)
   debugv(m_x, DEC);
   debug(" m_y=");
   debugv(m_y, DEC);
-  debug("\n");
+  debugnl();
 };
