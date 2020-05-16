@@ -16,10 +16,11 @@ class Commodore1351 : public ControlPortDeviceHandler
     } button;
     int8_t dX;
     int8_t dY;
-    int8_t wUD; ///< up/down wheel
-    int8_t wLR; ///< left/right wheel
+    int8_t wUD; ///< up/down wheel for regular mouse
+    int8_t wLR; ///< left/right wheel for regular mouse
+    int8_t unknown; ///< used by apple mouse
   };
-  static_assert(sizeof(MouseData) == 5, "unexpected MouseData size");
+  static_assert(sizeof(MouseData) == 6, "unexpected MouseData size");
 
   const uint8_t m_num;
   uint8_t m_x = 127;

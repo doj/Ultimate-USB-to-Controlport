@@ -161,7 +161,7 @@ ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
 
   if (! m_handler)
     {
-      if (len >= 3 && len <= 5)
+      if (len >= 3 && len <= 6)
 	{
 	  initMouse();
 	}

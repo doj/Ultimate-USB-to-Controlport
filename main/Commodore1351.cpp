@@ -153,7 +153,7 @@ Commodore1351::parse(const uint8_t *buf, uint8_t const len, USBHID *hid, const u
   debugnl();
 #endif
 
-  if (len < 3 || len > 5)
+  if (len < 3 || len > 6)
     {
       debugv(m_num);
       debug("mouse usb len:");
@@ -186,15 +186,24 @@ Commodore1351::parse(const uint8_t *buf, uint8_t const len, USBHID *hid, const u
     }
   m_oldButton = d->button;
 
-  if (len >= 4)
+  if (len == 6)
     {
-      (void)d->wUD;
-      // \todo micromys mouse wheel for up/down on pinLeft,pinRight
+      // apple mouse
+      (void)d->wLR; // is up/down
+      (void)d->wUD; // is left/right
     }
-  if (len >= 5)
+  else
     {
-      (void)d->wLR;
-      // \todo micromys mouse wheel for left right on pinUp,pinDown
+      if (len >= 4)
+        {
+          (void)d->wUD;
+          // \todo micromys mouse wheel for up/down on pinLeft,pinRight
+        }
+      if (len >= 5)
+        {
+          (void)d->wLR;
+          // \todo micromys mouse wheel for left right on pinUp,pinDown
+        }
     }
 
   if (d->dX || d->dY)

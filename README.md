@@ -194,6 +194,8 @@ names like kiwitata, retroflag.
 - [Microsoft Intellimouse optical USB](https://en.wikipedia.org/wiki/IntelliMouse).
   ![intellimouse](https://images.fastcompany.net/image/upload/w_596,c_limit,q_auto:best,f_auto/wp-cms/uploads/sites/4/2018/01/i-2-the-intellimouse-abides.jpg)
 
+- [Apple Mighty Mouse](https://en.wikipedia.org/wiki/Apple_Mighty_Mouse) wired
+
 - generic 3 button + wheel USB mouse
 
 - generic USB keyboard
