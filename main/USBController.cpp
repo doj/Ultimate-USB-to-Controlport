@@ -5,8 +5,6 @@
 #include "ControlPortDevice.h"
 #include "utility.h"
 
-void joystick(const uint8_t pin, const uint8_t state);
-
 USBController::~USBController()
 {
 }

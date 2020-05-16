@@ -197,6 +197,9 @@ ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
 void
 ControlPortDevice::pot(const uint8_t pin, const uint8_t state) const
 {
+  if (! (pin == m_pinPotX || pin == m_pinPotY))
+    return;
+
   if (state == LOW)
     {
       digitalWrite(pin, HIGH); // +5V
@@ -210,8 +213,26 @@ ControlPortDevice::pot(const uint8_t pin, const uint8_t state) const
     }
 }
 
+/// set an Arduino pin to LOW or HIGH for a Commodore control port digital input.
+/// the Commodore control port pin is either GND (state==LOW) or high-z (state==HIGH).
+/// @param pin Arduino pin
+/// @param state LOW or HIGH. use LOW if the corresponding button or direction is pressed.
+/// \sa https://www.arduino.cc/en/Tutorial/DigitalPins
 void
 ControlPortDevice::joystick(const uint8_t pin, const uint8_t state) const
 {
-  ::joystick(pin, state);
+  if (pin == m_pinPotX || pin == m_pinPotY)
+    return;
+
+  if (state == LOW)
+    {
+      digitalWrite(pin, LOW); // GND
+      pinMode(pin, OUTPUT);
+    }
+  else
+    {
+      // configure the pin for input. This will make it high impedance (high-z).
+      pinMode(pin, INPUT);
+      digitalWrite(pin, LOW);
+    }
 }
