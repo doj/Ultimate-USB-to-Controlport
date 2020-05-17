@@ -20,13 +20,12 @@ static USBHub UsbHub(&Usb);
 #define X(n) \
 static HIDUniversal uni ## n (&Usb); \
 static ControlPortDevice cpd ## n (n);
-// support up to 6 devices: 2*(joystick+keyboard+mouse)
+// support up to 5 devices: 2*(joystick+keyboard)+mouse
 X(1);
 X(2);
 X(3);
 X(4);
 X(5);
-X(6);
 #undef X
 
 // the setup function runs once upon startup
@@ -56,7 +55,6 @@ void setup()
   X(3);
   X(4);
   X(5);
-  X(6);
 #undef X
 }
 

@@ -9,9 +9,12 @@ void debugf(const char*);
 /// print a value @p v to the serial console.
 /// @param mode if HEX, print as 2 hex-digits;
 ///             if DEC, print as 1-3 digit decimal.
-void debugv(uint8_t v, uint8_t mode = HEX);
+void debugu(uint8_t v, uint8_t mode = HEX);
+/// print a value @p v to the serial console.
+void debugi(int8_t v);
 /// print a newline character to the serial console.
 void debugnl();
+/// print a value @p u to the serial console.
 void debugl(uintptr_t u);
 inline void debugl(const void *p) { debugl((uintptr_t)p); }
 #define debug(str) debugf(PSTR(str))
@@ -20,5 +23,6 @@ inline void debugl(const void *p) { debugl((uintptr_t)p); }
 #define debugs(str)
 #define debugf(str)
 inline void debugnl() {}
-inline void debugv(uint8_t, uint8_t mode = 0) {(void)mode;}
+inline void debugu(uint8_t, uint8_t mode = 0) {(void)mode;}
+#define debugi(v)
 #endif

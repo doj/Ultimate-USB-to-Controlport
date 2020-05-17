@@ -32,7 +32,7 @@ debugnl()
 static const char *hexdigit = "0123456789abcdef";
 
 void
-debugv(uint8_t v, const uint8_t mode)
+debugu(uint8_t v, const uint8_t mode)
 {
   char buf[4];
   if (mode == HEX)
@@ -58,9 +58,20 @@ debugv(uint8_t v, const uint8_t mode)
           Serial.print(buf+1);
           return;
         }
+      v /= 10;
       buf[0] = hexdigit[v % 10];
       Serial.print(buf);
     }
+}
+
+void debugi(int8_t v)
+{
+  if (v < 0)
+    {
+      Serial.print('-');
+      v = -v;
+    }
+  debugu(v,DEC);
 }
 
 void

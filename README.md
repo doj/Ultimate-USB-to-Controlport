@@ -219,6 +219,12 @@ the debug console output.
 Issues
 -------
 
+- the USB Host Shield 2.0 Library does not properly enumerate devices.
+  This software currently works around that issue by using the _universal HID device_
+  and manually parsing all incoming data packets. This may cause problems
+  for untested USB HID devices.
+
+- 1351 mouse support on POT is not working yet.
 
 Links
 ------

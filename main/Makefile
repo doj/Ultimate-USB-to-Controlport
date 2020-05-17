@@ -47,4 +47,4 @@ doc:	doxygen
 	if [ `uname` = Darwin ] ; then open html/index.html ; else $(BROWSER) html/index.html ; fi
 
 %.o:	%.ino
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -x c++ -c -o $@ $<

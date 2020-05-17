@@ -70,7 +70,7 @@ USBController::updateAutoFireFreq(uint8_t freq)
       if (! timer.updateInterval(m_autoFireTask, timerInterval(freq)))
 	{
 	  debug("failed autofire freq ");
-	  debugv(freq,DEC);
+	  debugu(freq,DEC);
 	  debugnl();
 	}
     }
@@ -151,17 +151,17 @@ USBController::OnY(uint8_t y)
         {
           ++m_autoFireAfreq;
           debug("auto fire A ");
-	  debugv(m_autoFireAfreq);
-	  debugnl();
-	  updateAutoFireFreq(m_autoFireAfreq);
-	}
+          debugu(m_autoFireAfreq,DEC);
+          debugnl();
+          updateAutoFireFreq(m_autoFireAfreq);
+        }
       if (isAutoFireYConfig() && m_autoFireYfreq < 255)
         {
           ++m_autoFireYfreq;
           debug("auto fire Y ");
-	  debugv(m_autoFireYfreq);
-	  debugnl();
-	  updateAutoFireFreq(m_autoFireYfreq);
+          debugu(m_autoFireYfreq,DEC);
+          debugnl();
+          updateAutoFireFreq(m_autoFireYfreq);
         }
     }
   else if (y > AXIS_CENTER + AXIS_SENSITIVITY)
@@ -173,17 +173,17 @@ USBController::OnY(uint8_t y)
         {
           --m_autoFireAfreq;
           debug("auto fire A ");
-	  debugv(m_autoFireAfreq);
-	  debugnl();
-	  updateAutoFireFreq(m_autoFireAfreq);
+          debugu(m_autoFireAfreq,DEC);
+          debugnl();
+          updateAutoFireFreq(m_autoFireAfreq);
         }
       if (isAutoFireYConfig() && m_autoFireYfreq > 1)
         {
           --m_autoFireYfreq;
           debug("auto fire Y ");
-	  debugv(m_autoFireYfreq);
-	  debugnl();
-	  updateAutoFireFreq(m_autoFireYfreq);
+          debugu(m_autoFireYfreq,DEC);
+          debugnl();
+          updateAutoFireFreq(m_autoFireYfreq);
         }
     }
   else
@@ -353,7 +353,7 @@ USBController::parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const u
     }
   else
     {
-      debugv(len,DEC);
+      debugu(len,DEC);
       debug("contr len");
       return;
     }

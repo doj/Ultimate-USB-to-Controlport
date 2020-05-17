@@ -29,9 +29,6 @@ class Commodore1351 : public ControlPortDeviceHandler
 
   void init();
   void move(const int8_t x, const int8_t y);
-  void mouse(const uint8_t pin, const uint8_t state);
-  void enableInterrupt();
-  void disableInterrupt();
 public:
   Commodore1351(uint8_t num, ControlPortDevice *cpd) :
     ControlPortDeviceHandler(cpd),
@@ -42,5 +39,4 @@ public:
   ~Commodore1351();
   void parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const uint8_t bAddress, const uint8_t epAddress) override;
   void irq();
-  void irq2(const bool x);
 };
