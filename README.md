@@ -1,27 +1,26 @@
 Ultimate USB to Controlport
 ============================
-Arduino project to convert USB joystick and mouse to digital for use
+An Arduino project to convert a USB joystick and mouse to digital for use
 with [Commodore](https://www.c64-wiki.com/wiki/Control_Port)
 or [Atari](https://en.wikipedia.org/wiki/Atari_joystick_port) computers.
 
-It is currently developed to support the [iNNEXT SNES Retro USB
-Controller](https://www.google.com/search?q=innext+snes+usb+controller),
-but should work with any generic USB joystick or gamepad.
+See the Controllers section below for supported USB devices.
 
 Compile and Install
 --------------------
 
-Install the [USB Host Shield Library 2.0](https://github.com/felis/USB_Host_Shield_2.0).
-Use the Arduino IDE library manager and install version 1.3.2
+Install the [USB Host Shield Library 2.0](https://github.com/felis/USB_Host_Shield_2.0)
+version 1.3.2 using the Arduino IDE library manager.
 
-Compile the program main/main.ino with the Arduino IDE.
+Then compile and upload the program main/main.ino with the Arduino IDE.
 
 Usage
 ------
 
-Connect a USB joystick or gamepad to the USB Host Shield.
-If the USB Host Shield (Library) supports the joystick it will produce
-events on the Commodore control port.
+Connect a USB joystick, gamepad, mouse, keyboard to the USB Host Shield.
+If the USB Host Shield (Library) supports the device it will produce
+events on the Commodore control port. You can also use a USB hub to
+connect multiple devices.
 
 The following buttons of a gamepad are assigned to the following
 directions:
@@ -70,17 +69,17 @@ Left and Right side buttons are used on the [Microsoft Intellimouse](https://en.
 The table below shows how keyboard keys are mapped to the control
 port:
 
-| Key | Control Port |
-| --- | ------------ |
-| up, num 8, w, i | up
+| Key               | Control Port |
+| ----------------- | ------------ |
+| up, num 8, w, i   | up
 | down, num 2, s, k | down
-| left, 4, a, j | left
-| right, 6, d, l | right
+| left, 4, a, j     | left
+| right, 6, d, l    | right
 | ins, space, ~, enter, F1, b | fire (gamepad B)
-| y | auto fire (gamepad Y)
-| x | up (gamepad X)
-| F2 | fire 2 on POT Y (gamepad select)
-| F3 | fire 3 on POT X (gamepad start)
+| y                 | auto fire (gamepad Y)
+| x                 | up (gamepad X)
+| F2                | fire 2 on POT Y (gamepad select)
+| F3                | fire 3 on POT X (gamepad start)
 
 Hardware
 ---------
@@ -205,6 +204,8 @@ names like kiwitata, retroflag.
 
 - [Apple Mighty Mouse](https://en.wikipedia.org/wiki/Apple_Mighty_Mouse) wired
 
+  ![mighty mouse](https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Apple_Wired_Mighty_Mouse_Top_View.jpg/320px-Apple_Wired_Mighty_Mouse_Top_View.jpg)
+
 - generic 3 button + wheel USB mouse
 
 - generic USB keyboard
@@ -214,6 +215,10 @@ Serial Debug Console
 By default the serial debug console is enabled and uses 115200
 baud. See the config.h file to configure the baud rate or to disable
 the debug console output.
+
+Issues
+-------
+
 
 Links
 ------
@@ -238,3 +243,10 @@ Contact
 --------
 Write an email to Dirk Jagdmann <doj@cubic.org>
 The source code is hosted on https://github.com/doj/Ultimate-USB-to-Controlport
+
+Changes
+--------
+
+| Date       | Changes |
+| ---------- | ------- |
+| 2020-05-17 | 1351 fixes
