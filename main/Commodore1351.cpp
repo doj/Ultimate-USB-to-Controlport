@@ -75,51 +75,59 @@ Commodore1351::enableInterrupt()
 void
 Commodore1351::disableInterrupt()
 {
-  if (m_num == 1)
-    {
-      detachInterrupt(digitalPinToInterrupt(m_cpd->m_pinPotX));
-    }
-  else if (m_num == 2)
-    {
-      detachInterrupt(digitalPinToInterrupt(m_cpd->m_pinPotX));
-    }
+  detachInterrupt(digitalPinToInterrupt(m_cpd->m_pinPotX));
 }
 
 void
 Commodore1351::irq()
 {
-  cli();//stop interrupts
   disableInterrupt();
+  cli();//stop interrupts
 
   // https://www.robotshop.com/community/forum/t/arduino-101-timers-and-interrupts/13072
+  // https://gist.github.com/psgs/e7ec757412c0b5cda60f854be57792fd
+  // https://www.nongnu.org/avr-libc/user-manual/group__avr__interrupts.html
   // configure timer1 to 2Mhz ticks
   TCCR1A = 0;// set entire TCCR1A register to 0
-  TCCR1B = (1 << WGM12) | // enable timer compare interrupt
-    (1 << CS11);  // Set CS12 and CS10 bits for 8 prescaler
-  // set compare match register for 2Mhz increments
-  OCR1A = (200 + m_y) * 2;
+  TCCR1B = _BV(WGM12) | // enable timer compare interrupt
+           _BV(CS11);   // Set CS11 for 8 divider to result in 2Mhz
   TCNT1  = 0;//initialize counter value to 0
-  TIMSK1 |= (1 << OCIE1A); // turn on CTC mode
+  // set compare match register for 2Mhz increments
+  OCR1A = (200 + m_x) * 2;
+  OCR1B = (200 + m_y) * 2;
+  TIMSK1 |= _BV(OCIE1A) | _BV(OCIE1B); // turn on CTC mode
 
+  mouse(m_cpd->m_pinPotX, LOW);
   mouse(m_cpd->m_pinPotY, LOW);
   sei();//allow interrupts
 }
 
 SIGNAL(TIMER1_COMPA_vect)
 {
-  cli();
-  // disable interrupt
+  // disable interrupt A
   TIMSK1 &= ~_BV(OCIE1A);
+  mouse1->irq2(true);
+}
 
-  mouse1->irq2();
-  sei();
+SIGNAL(TIMER1_COMPB_vect)
+{
+  // disable interrupt B
+  TIMSK1 &= ~_BV(OCIE1B);
+  mouse1->irq2(false);
 }
 
 void
-Commodore1351::irq2()
+Commodore1351::irq2(const bool x)
 {
-  mouse(m_cpd->m_pinPotY, HIGH);
-  enableInterrupt();
+  if (x)
+    {
+      mouse(m_cpd->m_pinPotX, HIGH);
+    }
+  else
+    {
+      mouse(m_cpd->m_pinPotY, HIGH);
+      enableInterrupt();
+    }
 }
 
 void
