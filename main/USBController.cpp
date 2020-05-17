@@ -13,9 +13,9 @@ void
 USBController::init() const
 {
 #if 0
-  debugv(m_num);
+  debugu(m_num,DEC);
   debug(" contr init ");
-  debugl(this);
+  debugp(this);
   debugnl();
 #endif
   m_cpd->joystick(m_cpd->m_pinUp,    HIGH);
@@ -81,8 +81,8 @@ void
 USBController::debugAxes() const
 {
 #if 0
-  debug("x "); debugv(m_x);
-  debug(" y ");debugv(m_y);
+  debug("x "); debugu(m_x);
+  debug(" y ");debugu(m_y);
   debugnl();
 #endif
 }
@@ -237,11 +237,11 @@ USBController::OnButtonDn(uint8_t but_id)
   m_button_state |= mask;
 
 #if USE_SERIAL && 0
-  debugv(m_num);
+  debugi(m_num,DEC);
   debug("Dn: ");
-  debugv(but_id);
+  debugu(but_id);
   debug(" ");
-  debugv(m_cpd->m_pinUp);
+  debugu(m_cpd->m_pinUp);
   debugnl();
 #endif
 }
@@ -286,9 +286,9 @@ USBController::OnButtonUp(uint8_t but_id)
   m_button_state &= ~mask;
 
 #if USE_SERIAL && 0
-  debugv(m_num);
+  debugu(m_num,DEC);
   debug("Up: ");
-  debugv(but_id);
+  debugu(but_id);
   debugnl();
 #endif
 }
@@ -301,12 +301,12 @@ USBController::parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const u
   (void)epAddress;
 
 #if 0
-  debugl(this);
+  debugp(this);
   debugs(" parse");
   for(int i = 0; i < len; ++i)
     {
       debugs(" ");
-      debugv(buf[i]);
+      debugu(buf[i]);
     }
   debugnl();
 #endif

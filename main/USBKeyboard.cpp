@@ -26,7 +26,7 @@ USBKeyboard::parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const uin
   for(int i = 0; i < len; ++i)
     {
       debugs(" ");
-      debugv(buf[i]);
+      debugu(buf[i]);
     }
   debugnl();
 #endif

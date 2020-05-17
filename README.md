@@ -183,7 +183,8 @@ The following list shows which features are implemented.
 - [ ] support 1351 mouse wheel
 - [ ] fix device mapping in USB Host Shield Library
 - [ ] MIDI input
-- [ ] burst fire mode
+- [ ] burst fire mode, can also be used for one-shot fire mode
+- [ ] fix 1351 analog jitter when USB data is received
 
 Controllers
 ------------
@@ -225,6 +226,7 @@ Issues
   for untested USB HID devices.
 
 - 1351 mouse support on POT is not working yet.
+  When USB data is received the timer1 does not reliably work.
 
 Links
 ------

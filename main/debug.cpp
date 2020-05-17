@@ -75,7 +75,7 @@ void debugi(int8_t v)
 }
 
 void
-debugl(uintptr_t u)
+debugus(uintptr_t u)
 {
   char buf[5];
   buf[0] = hexdigit[(u >> 12) & 15];

@@ -13,7 +13,7 @@ void
 ControlPortDevice::initMouse()
 {
 #if 0
-  debugl(this);
+  debugp(this);
   debug("initMouse");
   debugnl();
 #endif
@@ -52,7 +52,7 @@ void
 ControlPortDevice::initJoystick()
 {
 #if 0
-  debugl(this);
+  debugp(this);
   debug("initJoy");
   debugnl();
 #endif
@@ -91,7 +91,7 @@ void
 ControlPortDevice::initKeyboard()
 {
 #if 0
-  debugl(this);
+  debugp(this);
   debug("initKey");
   debugnl();
 #endif
@@ -154,7 +154,7 @@ ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
   for(int i = 0; i < len; ++i)
     {
       debugs(" ");
-      debugv(buf[i]);
+      debugu(buf[i]);
     }
   debugnl();
 #endif

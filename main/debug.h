@@ -10,14 +10,17 @@ void debugf(const char*);
 /// @param mode if HEX, print as 2 hex-digits;
 ///             if DEC, print as 1-3 digit decimal.
 void debugu(uint8_t v, uint8_t mode = HEX);
-/// print a value @p v to the serial console.
+/// print a decimal value @p v to the serial console.
 void debugi(int8_t v);
 /// print a newline character to the serial console.
 void debugnl();
-/// print a value @p u to the serial console.
-void debugl(uintptr_t u);
-inline void debugl(const void *p) { debugl((uintptr_t)p); }
+/// print a hexadecimal value @p u to the serial console.
+void debugus(uintptr_t u);
+/// print a pointer value @p p to the serial console.
+inline void debugp(const void *p) { debugus((uintptr_t)p); }
+/// print a string @p str to the serial console. @p str is located in Flash (progmem).
 #define debug(str) debugf(PSTR(str))
+
 #else
 #define debug(str)
 #define debugs(str)
@@ -25,4 +28,6 @@ inline void debugl(const void *p) { debugl((uintptr_t)p); }
 inline void debugnl() {}
 inline void debugu(uint8_t, uint8_t mode = 0) {(void)mode;}
 #define debugi(v)
+#define debugus(v)
+#define debugp(v)
 #endif
