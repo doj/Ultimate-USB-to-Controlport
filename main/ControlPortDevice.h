@@ -5,20 +5,24 @@
 #include <usbhid.h>
 #include "ControlPortDeviceHandler.h"
 
+void swapControlPorts();
+
 class ControlPortDevice : public HIDReportParser
 {
 private:
-  static const uint8_t JOYSTICK1 = 1;
-  static const uint8_t JOYSTICK2 = 2;
-  static const uint8_t MOUSE1 = 4;
-  static const uint8_t MOUSE2 = 8;
-  static const uint8_t KEYBOARD1 = 0x10;
-  static const uint8_t KEYBOARD2 = 0x20;
+  static const uint8_t JOYSTICK1 = 0x01;
+  static const uint8_t JOYSTICK2 = 0x10;
+  static const uint8_t MOUSE1 = 0x02;
+  static const uint8_t MOUSE2 = 0x20;
+  static const uint8_t KEYBOARD1 = 0x04;
+  static const uint8_t KEYBOARD2 = 0x40;
   static uint8_t s_used;
 
   const uint8_t m_num;
 
   ControlPortDeviceHandler *m_handler = NULL;
+
+  /// JOYSTICK1..KEYBOARD2
   uint8_t m_used = 0;
 public:
   uint8_t m_pinUp;
@@ -37,6 +41,7 @@ public:
   void initMouse();
   void initJoystick();
   void initKeyboard();
+  void swapPort();
 
 #if defined(USB_HOST_SHIELD_VERSION) && (USB_HOST_SHIELD_VERSION >= 0x010303)
   void Release() override;
@@ -47,4 +52,7 @@ public:
 
   void pot(const uint8_t pin, const uint8_t state) const;
   void joystick(const uint8_t pin, const uint8_t state) const;
+
+private:
+  void initPins();
 };

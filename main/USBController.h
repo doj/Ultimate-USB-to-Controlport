@@ -85,6 +85,11 @@ public:
     static const uint16_t mask = _BV(BUT_SELECT) | _BV(BUT_START) | _BV(BUT_B);
     return (m_button_state & mask) == mask;
   }
+  bool isPortSwitchConfig() const
+  {
+    static const uint16_t mask = _BV(BUT_SELECT) | _BV(BUT_START) | _BV(BUT_L2);
+    return (m_button_state & mask) == mask;
+  }
   void cancelAutoFire();
   void startAutoFire(uint8_t freq);
   void autoFireCB();

@@ -29,7 +29,8 @@ X(5);
 #undef X
 
 // the setup function runs once upon startup
-void setup()
+void
+setup()
 {
 #if USE_SERIAL
   Serial.begin(SERIAL_BAUD);
@@ -59,8 +60,22 @@ void setup()
 }
 
 // the loop function runs over and over again forever
-void loop()
+void
+loop()
 {
   Usb.Task();
   timer.tick();
+}
+
+// swap the control ports of all devices
+void
+swapControlPorts()
+{
+#define X(n) cpd ## n.swapPort()
+  X(1);
+  X(2);
+  X(3);
+  X(4);
+  X(5);
+#undef X
 }

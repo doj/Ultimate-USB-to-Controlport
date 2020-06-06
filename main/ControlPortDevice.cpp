@@ -21,28 +21,16 @@ ControlPortDevice::initMouse()
     {
       m_used  = MOUSE1;
       s_used |= MOUSE1;
-      m_pinUp    = CP1_UP;
-      m_pinDown  = CP1_DOWN;
-      m_pinLeft  = CP1_LEFT;
-      m_pinRight = CP1_RIGHT;
-      m_pinFire  = CP1_FIRE;
-      m_pinPotX  = CP1_POTX;
-      m_pinPotY  = CP1_POTY;
       m_handler = new Commodore1351(1,this);
+      initPins();
       return;
     }
   if (! (s_used & MOUSE2))
     {
       m_used  = MOUSE2;
       s_used |= MOUSE2;
-      m_pinUp    = CP2_UP;
-      m_pinDown  = CP2_DOWN;
-      m_pinLeft  = CP2_LEFT;
-      m_pinRight = CP2_RIGHT;
-      m_pinFire  = CP2_FIRE;
-      m_pinPotX  = CP2_POTX;
-      m_pinPotY  = CP2_POTY;
       m_handler = new Commodore1351(2,this);
+      initPins();
       return;
     }
   debug("!initMouse");
@@ -60,6 +48,28 @@ ControlPortDevice::initJoystick()
     {
       m_used  = JOYSTICK1;
       s_used |= JOYSTICK1;
+      m_handler = new USBController(1,this);
+      initPins();
+      return;
+    }
+  if (! (s_used & JOYSTICK2))
+    {
+      m_used  = JOYSTICK2;
+      s_used |= JOYSTICK2;
+      m_handler = new USBController(2,this);
+      initPins();
+      return;
+    }
+  debug("!initJoy");
+}
+
+void
+ControlPortDevice::initPins()
+{
+  if (m_used == JOYSTICK1 ||
+      m_used == MOUSE1 ||
+      m_used == KEYBOARD1)
+    {
       m_pinUp    = CP1_UP;
       m_pinDown  = CP1_DOWN;
       m_pinLeft  = CP1_LEFT;
@@ -67,13 +77,11 @@ ControlPortDevice::initJoystick()
       m_pinFire  = CP1_FIRE;
       m_pinPotX  = CP1_POTX;
       m_pinPotY  = CP1_POTY;
-      m_handler = new USBController(1,this);
-      return;
     }
-  if (! (s_used & JOYSTICK2))
+  else if (m_used == JOYSTICK2 ||
+           m_used == MOUSE2 ||
+           m_used == KEYBOARD2)
     {
-      m_used  = JOYSTICK2;
-      s_used |= JOYSTICK2;
       m_pinUp    = CP2_UP;
       m_pinDown  = CP2_DOWN;
       m_pinLeft  = CP2_LEFT;
@@ -81,11 +89,9 @@ ControlPortDevice::initJoystick()
       m_pinFire  = CP2_FIRE;
       m_pinPotX  = CP2_POTX;
       m_pinPotY  = CP2_POTY;
-      m_handler = new USBController(2,this);
-      return;
     }
-  debug("!initJoy");
 }
+
 
 void
 ControlPortDevice::initKeyboard()
@@ -99,28 +105,16 @@ ControlPortDevice::initKeyboard()
     {
       m_used  = KEYBOARD1;
       s_used |= KEYBOARD1;
-      m_pinUp    = CP1_UP;
-      m_pinDown  = CP1_DOWN;
-      m_pinLeft  = CP1_LEFT;
-      m_pinRight = CP1_RIGHT;
-      m_pinFire  = CP1_FIRE;
-      m_pinPotX  = CP1_POTX;
-      m_pinPotY  = CP1_POTY;
       m_handler = new USBKeyboard(1,this);
+      initPins();
       return;
     }
   if (! (s_used & KEYBOARD2))
     {
       m_used  = KEYBOARD2;
       s_used |= KEYBOARD2;
-      m_pinUp    = CP2_UP;
-      m_pinDown  = CP2_DOWN;
-      m_pinLeft  = CP2_LEFT;
-      m_pinRight = CP2_RIGHT;
-      m_pinFire  = CP2_FIRE;
-      m_pinPotX  = CP2_POTX;
-      m_pinPotY  = CP2_POTY;
       m_handler = new USBKeyboard(2,this);
+      initPins();
       return;
     }
   debug("!initKey");
@@ -162,26 +156,26 @@ ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
   if (! m_handler)
     {
       if (len >= 3 && len <= 6)
-	{
-	  initMouse();
-	}
+        {
+          initMouse();
+        }
       else if (len == 2)
-	{
-	  initJoystick();
-	}
+        {
+          initJoystick();
+        }
       if (len == 8)
-	{
-	  if (buf[0] == 0x01 &&
-	      buf[1] == 0x7f &&
-	      buf[2] == 0x7f)
-	    {
-	      initJoystick();
-	    }
-	  else if (buf[1] == 0x00)
-	    {
-	      initKeyboard();
-	    }
-	}
+        {
+          if (buf[0] == 0x01 &&
+              buf[1] == 0x7f &&
+              buf[2] == 0x7f)
+            {
+              initJoystick();
+            }
+          else if (buf[1] == 0x00)
+            {
+              initKeyboard();
+            }
+        }
     }
   if (m_handler)
     {
@@ -235,4 +229,20 @@ ControlPortDevice::joystick(const uint8_t pin, const uint8_t state) const
       pinMode(pin, INPUT);
       digitalWrite(pin, LOW);
     }
+}
+
+void
+ControlPortDevice::swapPort()
+{
+  if (m_used == 0)
+    return;
+
+  s_used &= ~m_used;
+  if (m_used < 0x10)
+    m_used <<= 4;
+  else
+    m_used >>= 4;
+  s_used |= m_used;
+
+  initPins();
 }

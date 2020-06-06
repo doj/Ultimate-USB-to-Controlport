@@ -48,6 +48,9 @@ To configure the frequency press:
 You can switch the directions of all buttons (lefty mode), press:
 select+start+B+left.
 
+You can switch the Control Port a device uses by pressing:
+select+start+L2+up
+
 A USB mouse will be used to output the
 [Commodore 1351](https://www.c64-wiki.com/wiki/Mouse_1351) mouse
 protocol on the Pot X and Pot Y control port inputs. The following
@@ -168,10 +171,10 @@ The following list shows which features are implemented.
 - [X] support PlayStation Classic USB controller
 - [X] use keyboard as joystick
 - [X] set keyboard numlock LED for each fire event
+- [X] switch joystick 1,2 and mouse 1,2 with button combination
 - [ ] the USB controller should remember the button state and count
   how many button down pushes were made. However this is not so easy
   when autofire is selected.
-- [ ] switch joystick 1,2 and mouse 1,2 with button combination
 - [ ] reconfigure any USB button to any Commodore button
 - [ ] save configuration to Arduino EEPROM https://www.arduino.cc/en/Reference/EEPROM
 - [ ] support PlayStation 3 controller
