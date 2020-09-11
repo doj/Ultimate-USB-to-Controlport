@@ -106,35 +106,38 @@ Uno R3 board.
 The following table shows how the 2 [control ports](https://en.wikipedia.org/wiki/Atari_joystick_port) with [https://en.wikipedia.org/wiki/D-subminiature](D-sub 9)
 connectors should be connected to the Arduino pins. This suggested
 connection is for a Commodore 64. You can change the pin assignments
-in the config.h file.
+in the config.h file. Except for the +5V (which doesn't need to to
+connected) and the GND, all connections between the Arduino and the
+control port should be made via a resistor. The exact resistor value
+is not important, anything in the 100-500 Ohm range should be fine.
 
 Control Port 1
 
-| Arduino | D-sub | Function |
-| ------- | ----- | -------- |
-| A0      | 1     | Up       |
-| A1      | 2     | Down     |
-| A2      | 3     | Left     |
-| A3      | 4     | Right    |
-| A5      | 5     | Pot Y    |
-| A4      | 6     | Fire     |
-| (n/c)   | 7     | +5V      |
-| GND     | 8     | GND      |
-| D2      | 9     | Pot X    |
+| Arduino | Resistor | D-sub | Function |
+| ------- | -------- | ----- | -------- |
+| A0      | 220 Ohm  | 1     | Up       |
+| A1      | 220 Ohm  | 2     | Down     |
+| A2      | 220 Ohm  | 3     | Left     |
+| A3      | 220 Ohm  | 4     | Right    |
+| A5      | 220 Ohm  | 5     | Pot Y    |
+| A4      | 220 Ohm  | 6     | Fire     |
+| (n/c)   | -        | 7     | +5V      |
+| GND     | -        | 8     | GND      |
+| D2      | 220 Ohm  | 9     | Pot X    |
 
 Control Port 2
 
-| Arduino | D-sub | Function |
-| ------- | ----- | -------- |
-| D4      | 1     | Up       |
-| D5      | 2     | Down     |
-| D6      | 3     | Left     |
-| D7      | 4     | Right    |
-| D1      | 5     | Pot Y    |
-| D8      | 6     | Fire     |
-| (n/c)   | 7     | +5V      |
-| GND     | 8     | GND      |
-| D3      | 9     | Pot X    |
+| Arduino | Resistor | D-sub | Function |
+| ------- | -------- | ----- | -------- |
+| D4      | 220 Ohm  | 1     | Up       |
+| D5      | 220 Ohm  | 2     | Down     |
+| D6      | 220 Ohm  | 3     | Left     |
+| D7      | 220 Ohm  | 4     | Right    |
+| D1      | 220 Ohm  | 5     | Pot Y    |
+| D8      | 220 Ohm  | 6     | Fire     |
+| (n/c)   | -        | 7     | +5V      |
+| GND     | -        | 8     | GND      |
+| D3      | 220 Ohm  | 9     | Pot X    |
 
 Note: On the Arduino pins D0 and D1 are used for the serial debug
 console. If you connect the control port Pot Y line to D1, you can't
@@ -142,8 +145,12 @@ use the serial console any more.
 
 If you want to change the Arduino pin assignments, change the config.h file.
 
-If you have a clone USB Host Shield, the following article may help
-you fix it: https://esp8266-notes.blogspot.com/2017/08/defective-arduino-usb-host-shield-boards.html
+If you have a clone USB Host Shield from China it is likely that the 3.3V
+and 5V power supply to the board and USB device connector are not
+connected. The solder pads show a gap. Closing them with a soldering
+iron should make the USB Host Shield operational. See
+https://esp8266-notes.blogspot.com/2017/08/defective-arduino-usb-host-shield-boards.html
+for details.
 
 The following picture shows the development prototype with an Arduino
 Uno, the USB Host Shield, a 4 port USB hub and connections to both
@@ -249,6 +256,9 @@ http://www.usbmadesimple.co.uk/ums_4.htm
 
 USB Host Shield 2.0 Library with fixes and better debugging messages:
 https://github.com/doj/USB_Host_Shield_2.0
+
+[PSX64 Interface](http://www.oursyntheticdreams.com/products/psx64-interface)
+The PSX64 interface connects Playstation controllers to most computers and consoles that use a DB9 joystick port.
 
 Contact
 --------
