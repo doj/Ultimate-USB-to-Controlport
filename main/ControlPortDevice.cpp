@@ -144,10 +144,10 @@ ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
   (void)is_rpt_id;
 
 #if 0
-  debugs("parse");
+  debug("parse");
   for(int i = 0; i < len; ++i)
     {
-      debugs(" ");
+      debug(" ");
       debugu(buf[i]);
     }
   debugnl();
@@ -198,6 +198,7 @@ ControlPortDevice::pot(const uint8_t pin, const uint8_t state) const
     {
       digitalWrite(pin, HIGH); // +5V
       pinMode(pin, OUTPUT);
+      debug("\npot "); debugu(pin);
     }
   else
     {
@@ -222,6 +223,7 @@ ControlPortDevice::joystick(const uint8_t pin, const uint8_t state) const
     {
       digitalWrite(pin, LOW); // GND
       pinMode(pin, OUTPUT);
+      debug("\njoy "); debugu(pin);
     }
   else
     {
