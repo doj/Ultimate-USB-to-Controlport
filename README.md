@@ -158,6 +158,13 @@ Commodore 64 control ports.
 
 ![prototype](https://raw.githubusercontent.com/doj/Ultimate-USB-to-Controlport/master/prototype.jpg)
 
+### custom Arduino Uno Shield
+
+the arduino-shield/ directory contains a [KiCad](https://kicad-pcb.org/)
+project of an Arduino Uno Shield.
+
+![Arduino Uno Shield](https://raw.githubusercontent.com/doj/Ultimate-USB-to-Controlport/master/arduino-shield/Ultimate-USB-joystick.jpg)
+
 Feature Implementation Status
 ------------------------------
 The following list shows which features are implemented.
