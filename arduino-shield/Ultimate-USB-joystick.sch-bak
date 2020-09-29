@@ -548,10 +548,10 @@ Wire Wire Line
 	4150 4300 4150 4200
 NoConn ~ 4250 3400
 $Comp
-L Switch:SW_Push reset1
+L Switch:SW_Push reset
 U 1 1 5F75A243
 P 3500 3100
-F 0 "reset1" V 3546 3052 50  0000 R CNN
+F 0 "reset" V 3546 3052 50  0000 R CNN
 F 1 "SW_Push" V 3455 3052 50  0000 R CNN
 F 2 "Button_Switch_THT:SW_TH_Tactile_Omron_B3F-10xx" H 3500 3300 50  0001 C CNN
 F 3 "~" H 3500 3300 50  0001 C CNN
