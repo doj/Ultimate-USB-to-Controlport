@@ -165,6 +165,18 @@ project of an Arduino Uno Shield.
 
 ![Arduino Uno Shield](https://raw.githubusercontent.com/doj/Ultimate-USB-to-Controlport/master/arduino-shield/Ultimate-USB-joystick.jpg)
 
+The following picture shows a build of the first version of the
+shield.
+
+![Arduino Uno Shield](https://raw.githubusercontent.com/doj/Ultimate-USB-to-Controlport/master/arduino-shield/shield-2020-09-10.jpg)
+
+The following changes would improve the Arduino Uni Shield:
+
+- [ ] increase distance of resistor pads
+- [ ] use control port +5V to power the arduino. We need to
+      protect against drawing too much current from the C64.
+- [ ] design a new shield which can be plugged directly into a C64.
+
 Feature Implementation Status
 ------------------------------
 The following list shows which features are implemented.
@@ -189,7 +201,12 @@ The following list shows which features are implemented.
 - [ ] the USB controller should remember the button state and count
   how many button down pushes were made. However this is not so easy
   when autofire is selected.
+  For example the following is buggy:
+  press d-pad down, then X (up). When d-pad is released, both states
+  are cleared.
 - [ ] reconfigure any USB button to any Commodore button
+- [ ] configure a USB button to set multiple directions at once. this
+      could be useful for up+down and left+right to encode a special button.
 - [ ] save configuration to Arduino EEPROM https://www.arduino.cc/en/Reference/EEPROM
 - [ ] support PlayStation 3 controller
 - [ ] support PlayStation 4 controller
@@ -267,6 +284,39 @@ https://github.com/doj/USB_Host_Shield_2.0
 [PSX64 Interface](http://www.oursyntheticdreams.com/products/psx64-interface)
 The PSX64 interface connects Playstation controllers to most computers and consoles that use a DB9 joystick port.
 
+[PadSwitcher64](https://github.com/Hojo-Norem/PadSwitcher64)
+is an interface for
+[SNES controllers](https://en.wikipedia.org/wiki/List_of_Nintendo_controllers#Super_Nintendo_Entertainment_System)
+and Commodore 64 control ports.
+
+Test Program
+-------------
+
+The following C64 Basic program can be used to test the 2 control
+ports and the POT of control port 1. You also find it in the GIT
+repository as [joysticktest.prg](https://raw.githubusercontent.com/doj/Ultimate-USB-to-Controlport/master/joysticktest.prg))
+
+```basic
+10 j = NOT PEEK(56321)
+15 b = NOT PEEK(56320)
+20 PRINT CHR$(147);
+30 IF (j AND 1) THEN PRINT "1U ";
+35 IF (b AND 1) THEN PRINT "2U ";
+40 IF (j AND 2) THEN PRINT "1D ";
+45 IF (b AND 2) THEN PRINT "2D ";
+50 IF (j AND 4) THEN PRINT "1L ";
+55 IF (b AND 4) THEN PRINT "2L ";
+60 IF (j AND 8) THEN PRINT "1R ";
+65 IF (b AND 8) THEN PRINT "2R ";
+70 IF (j AND 16) THEN PRINT "1F ";
+75 IF (b AND 16) THEN PRINT "2F ";
+80 PRINT
+200 POKE 56322,224 : REM disable keyboard
+210 PRINT "POT1X " ; PEEK(54297) ; " POT1Y " ; PEEK(54298)
+290 POKE 56322,255 : REM enable keyboard
+1000 GOTO 10
+```
+
 Contact
 --------
 Write an email to Dirk Jagdmann <doj@cubic.org>
@@ -278,3 +328,5 @@ Changes
 | Date       | Changes |
 | ---------- | ------- |
 | 2020-05-17 | 1351 fixes
+| 2020-09-29 | add Arduino Uno Shield PCB
+| 2020-09-30 | fix stuck direction when switching control ports
