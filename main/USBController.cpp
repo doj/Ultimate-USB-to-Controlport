@@ -18,13 +18,7 @@ USBController::init() const
   debugp(this);
   debugnl();
 #endif
-  m_cpd->joystick(m_cpd->m_pinUp,    HIGH);
-  m_cpd->joystick(m_cpd->m_pinDown,  HIGH);
-  m_cpd->joystick(m_cpd->m_pinLeft,  HIGH);
-  m_cpd->joystick(m_cpd->m_pinRight, HIGH);
-  m_cpd->joystick(m_cpd->m_pinFire,  HIGH);
-  m_cpd->pot(m_cpd->m_pinPotX, HIGH);
-  m_cpd->pot(m_cpd->m_pinPotX, HIGH);
+  resetAllPins();
 }
 
 bool
@@ -162,6 +156,7 @@ USBController::OnY(uint8_t y)
         }
       else if (isPortSwitchConfig())
         {
+          resetAllPins();
           ::swapControlPorts();
         }
       else
@@ -406,4 +401,16 @@ USBController::fire(bool on)
 {
   m_cpd->joystick(m_cpd->m_pinFire, on ? LOW : HIGH);
   fireCB(on);
+}
+
+void
+USBController::resetAllPins() const
+{
+  m_cpd->joystick(m_cpd->m_pinUp,    HIGH);
+  m_cpd->joystick(m_cpd->m_pinDown,  HIGH);
+  m_cpd->joystick(m_cpd->m_pinLeft,  HIGH);
+  m_cpd->joystick(m_cpd->m_pinRight, HIGH);
+  m_cpd->joystick(m_cpd->m_pinFire,  HIGH);
+  m_cpd->pot(m_cpd->m_pinPotX, HIGH);
+  m_cpd->pot(m_cpd->m_pinPotX, HIGH);
 }

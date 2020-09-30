@@ -94,6 +94,7 @@ public:
   void startAutoFire(uint8_t freq);
   void autoFireCB();
   void updateAutoFireFreq(uint8_t freq);
+  void resetAllPins() const;
 
   void parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const uint8_t bAddress, const uint8_t epAddress) override;
 };
