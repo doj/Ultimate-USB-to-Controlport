@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "ControlPortDevice.h"
 #include "utility.h"
+#include "hiduniversal.h"
 
 USBController::~USBController()
 {
@@ -40,6 +41,7 @@ USBController::cancelAutoFire()
 {
   fire(false);
   timer.cancel(m_autoFireTask);
+  set(0, 0, 0x20, 0x20, 0xff);
 }
 
 inline unsigned long timerInterval(uint8_t freq)
@@ -54,6 +56,7 @@ USBController::startAutoFire(uint8_t freq)
   m_autoFireState = true;
   fire(true);
   m_autoFireTask = timer.every(timerInterval(freq), ::autoFireCB, this);
+  set(0x80, 0x80, 0xff, 0x20, 0x20);
 }
 
 void
@@ -299,9 +302,9 @@ USBController::OnButtonUp(uint8_t but_id)
 void
 USBController::parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const uint8_t bAddress, const uint8_t epAddress)
 {
-  (void)hid;
-  (void)bAddress;
-  (void)epAddress;
+  m_hid = hid;
+  m_bAddress = bAddress;
+  m_epAddress = epAddress;
 
 #if 0
   debugp(this);
@@ -318,8 +321,7 @@ USBController::parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const u
   uint8_t x = 0;
   uint8_t y = 0;
 
-  // NES
-  if (len == 8)
+  if (len == 8 && m_type == iNNEXT)
     {
       x = buf[3];
       y = buf[4];
@@ -337,8 +339,79 @@ USBController::parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const u
       buttons = buf[6] << 4;
       buttons |= (buf[5] >> 4);
     }
-  // Sony
-  else if (len == 2)
+  else if (len == 8 && m_type == P4_5N)
+    {
+      // left analog stick
+      x = buf[2];
+      y = buf[3];
+
+      // check d-pad
+      switch(buf[5] & 0xF)
+        {
+          // up
+        case 0: x=0x7f, y=0; break;
+          // up+right
+        case 1: x=0xff, y=0; break;
+          // right
+        case 2: x=0xff, y=0x7f; break;
+          // down+right
+        case 3: x=0xff, y=0xff; break;
+          // down
+        case 4: x=0x7f, y=0xff; break;
+          // down+left
+        case 5: x=0,    y=0xff; break;
+          // left
+        case 6: x=0,    y=0x7f; break;
+          // up+left
+        case 7: x=0,    y=0; break;
+        }
+
+      buttons = 0;
+      // triangle
+      if (buf[5] & 0x80)
+        buttons |= 1 << (BUT_X-1);
+      // circle
+      if (buf[5] & 0x40)
+        buttons |= 1 << (BUT_A-1);
+      // cross
+      if (buf[5] & 0x20)
+        buttons |= 1 << (BUT_B-1);
+      // square
+      if (buf[5] & 0x10)
+        buttons |= 1 << (BUT_Y-1);
+
+      if (buf[6] & 1)
+        buttons |= 1 << (BUT_L1-1);
+      if (buf[6] & 2)
+        buttons |= 1 << (BUT_R1-1);
+      if (buf[6] & 4)
+        buttons |= 1 << (BUT_L2-1);
+      if (buf[6] & 8)
+        buttons |= 1 << (BUT_R2-1);
+
+      if (buf[6] & 0x10)
+        buttons |= 1 << (BUT_SHARE-1);
+      // OPTIONS
+      if (buf[6] & 0x20)
+        buttons |= 1 << (BUT_SELECT-1);
+      // analog left
+      if (buf[6] & 0x40)
+        buttons |= 1 << (BUT_B-1);
+      // analog right
+      if (buf[6] & 0x80)
+        buttons |= 1 << (BUT_B-1);
+
+      // PS
+      if (buf[7] & 1)
+        buttons |= 1 << (BUT_START-1);
+      // center
+      if (buf[7] & 2)
+        buttons |= 1 << (BUT_B-1);
+
+      // right analog stick, buf[0], buf[1]
+      // TODO: set the pot values
+    }
+  else if (len == 2 && m_type == SonyPS1)
     {
       buttons = ((buf[1] & 3) << 8) | buf[0];
 
@@ -413,4 +486,44 @@ USBController::resetAllPins() const
   m_cpd->joystick(m_cpd->m_pinFire,  HIGH);
   m_cpd->pot(m_cpd->m_pinPotX, HIGH);
   m_cpd->pot(m_cpd->m_pinPotX, HIGH);
+}
+
+void
+USBController::set(const uint8_t rumbleLo, const uint8_t rumbleHi, const uint8_t r, const uint8_t g, const uint8_t b) const
+{
+  (void)rumbleLo;
+  (void)rumbleHi;
+  (void)r;
+  (void)g;
+  (void)b;
+#if defined(USB_HOST_SHIELD_VERSION) && USB_HOST_SHIELD_VERSION >= 0x010304 && 0
+  if (m_type == P4_5N)
+    {
+      uint8_t buf[32];
+      memset(buf, 0, sizeof(buf));
+
+      buf[0] = 0x05; // Report ID
+      buf[1] = 0xFF;
+
+      buf[4] = rumbleLo; // Small Rumble
+      buf[5] = rumbleHi; // Big rumble
+
+      buf[6] = r; // Red
+      buf[7] = g; // Green
+      buf[8] = b; // Blue
+
+      //buf[9] = 0; // Time to flash bright (255 = 2.5 seconds)
+      //buf[10] = 0; // Time to flash dark (255 = 2.5 seconds)
+
+      const uint8_t ret = m_hid->SndRpt(sizeof(buf), buf);
+      debug(" ret ");debugu(ret);
+      debugnl();
+    }
+  else
+    {
+      debug("set, no type ");
+      debugu(m_type);
+      debugnl();
+    }
+#endif
 }

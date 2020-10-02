@@ -15,10 +15,39 @@
 
 Timer_t timer;
 
+class NULLUSBReadParser : public USBReadParser
+{
+public:
+  void Parse(const uint16_t len, const uint8_t *pbuf, const uint16_t &offset) override
+  {
+    (void)len;
+    (void)pbuf;
+    (void)offset;
+  }
+};
+
+class HIDUniversalWithDump : public HIDUniversal
+{
+public:
+  HIDUniversalWithDump(USB *usb) : HIDUniversal(usb) {}
+protected:
+  uint8_t OnInitSuccessful() override
+  {
+    uint8_t rcode;
+    NULLUSBReadParser p;
+    // TODO: something is happening in GetReportDescr() that makes the P4-5N controller start up correctly.
+    if ((rcode = GetReportDescr(0, &p)))
+      {
+        debug("!GetReportDescr");
+      }
+    return rcode;
+  }
+};
+
 static USB Usb;
 static USBHub UsbHub(&Usb);
 #define X(n) \
-static HIDUniversal uni ## n (&Usb); \
+static HIDUniversalWithDump uni ## n (&Usb); \
 static ControlPortDevice cpd ## n (n);
 // support up to 5 devices: 2*(joystick+keyboard)+mouse
 X(1);

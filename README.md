@@ -98,7 +98,7 @@ clone Arduino Uno board. To connect the resistors and cables (or Sub-D
 connectors) you can also purchase a
 [Proto Shield R3](https://store.arduino.cc/usa/proto-shield-rev3-uno-size).
 
-The following picture shows the loation of all I/O pins on the Arduino
+The following picture shows the location of all I/O pins on the Arduino
 Uno R3 board.
 
 ![Arduino Uno R3 pinout](https://upload.wikimedia.org/wikipedia/commons/c/c9/Pinout_of_ARDUINO_Board_and_ATMega328PU.svg)
@@ -233,6 +233,10 @@ names like kiwitata, retroflag.
 
   ![SNES USB controller](https://www.picclickimg.com/00/s/MTAwMVgxMDAw/z/sV0AAOSwYY1enxD7/$/2x-iNNEXT-SNES-USB-Wired-Game-Controller-Gamepad-_57.jpg)
 
+- P4-5N USB controller, which costs ~USD20 in 2020 on Amazon.com
+
+  ![P4-5N](https://www.dhresource.com/0x0/f2/albu/g9/M00/7D/83/rBVaVV5eK-yAFbRuAADgDfoPW-w106.jpg/1pcs-hot-2020-new-for-ps4-controller-host.jpg)
+
 - [Microsoft Intellimouse optical USB](https://en.wikipedia.org/wiki/IntelliMouse).
 
   ![intellimouse](https://images.fastcompany.net/image/upload/w_596,c_limit,q_auto:best,f_auto/wp-cms/uploads/sites/4/2018/01/i-2-the-intellimouse-abides.jpg)
@@ -294,7 +298,7 @@ Test Program
 
 The following C64 Basic program can be used to test the 2 control
 ports and the POT of control port 1. You also find it in the GIT
-repository as [joysticktest.prg](https://raw.githubusercontent.com/doj/Ultimate-USB-to-Controlport/master/joysticktest.prg))
+repository as [joysticktest.prg](https://raw.githubusercontent.com/doj/Ultimate-USB-to-Controlport/master/joysticktest.prg)
 
 ```basic
 10 j = NOT PEEK(56321)

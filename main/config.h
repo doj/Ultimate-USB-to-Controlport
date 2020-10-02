@@ -5,7 +5,7 @@
 
 /// define to 1 if you want to use a serial output for debugging on PIN_D0 and PIN_D1.
 /// You can't use those pins for control port pins.
-#define USE_SERIAL 0
+#define USE_SERIAL 1
 #if USE_SERIAL
 #define SERIAL_BAUD 115200
 #include <SPI.h>

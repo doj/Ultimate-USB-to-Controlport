@@ -7,6 +7,16 @@
 
 class USBController : public ControlPortDeviceHandler
 {
+public:
+  enum type_t : uint8_t
+  {
+    Generic,
+    iNNEXT,
+    SonyPS1,
+    P4_5N,
+  };
+
+private:
 #if USE_SERIAL
   int8_t m_x = 0x7f;
   int8_t m_y = 0x7f;
@@ -47,6 +57,7 @@ protected:
   static const uint8_t BUT_R1 = 8; ///< only Sony
   static const uint8_t BUT_SELECT = 9;
   static const uint8_t BUT_START  = 10;
+  static const uint8_t BUT_SHARE  = 11;
   ///@}
 
   uint8_t m_but_a = BUT_A;
@@ -57,10 +68,18 @@ protected:
   virtual void fireCB(bool on);
   void fire(bool on);
 
+  const type_t m_type;
+
+  USBHID *m_hid = NULL;
+  uint8_t m_bAddress = 0;
+  uint8_t m_epAddress = 0;
+
 public:
-  USBController(uint8_t num, ControlPortDevice *cpd) :
+
+  USBController(uint8_t num, ControlPortDevice *cpd, type_t t) :
     ControlPortDeviceHandler(cpd),
-    m_num(num)
+    m_num(num),
+    m_type(t)
   {
     init();
   }
@@ -97,4 +116,6 @@ public:
   void resetAllPins() const;
 
   void parse(const uint8_t *buf, const uint8_t len, USBHID *hid, const uint8_t bAddress, const uint8_t epAddress) override;
+
+  void set(const uint8_t rumbleLo, const uint8_t rumbleHi, const uint8_t r, const uint8_t g, const uint8_t b) const;
 };

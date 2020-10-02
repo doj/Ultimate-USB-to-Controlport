@@ -13,7 +13,7 @@ class USBKeyboard : public USBController
 
 public:
   USBKeyboard(uint8_t num, ControlPortDevice *cpd) :
-    USBController(num,cpd)
+    USBController(num,cpd,Generic)
   {
     memset(m_currentKeys, 0, sizeof(m_currentKeys));
   }

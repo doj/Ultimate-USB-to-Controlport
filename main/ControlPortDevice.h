@@ -3,7 +3,7 @@
 #pragma once
 
 #include <usbhid.h>
-#include "ControlPortDeviceHandler.h"
+#include "USBController.h"
 
 void swapControlPorts();
 
@@ -39,11 +39,11 @@ public:
   }
 
   void initMouse();
-  void initJoystick();
+  void initJoystick(const USBController::type_t t);
   void initKeyboard();
   void swapPort();
 
-#if defined(USB_HOST_SHIELD_VERSION) && (USB_HOST_SHIELD_VERSION >= 0x010303)
+#if defined(USB_HOST_SHIELD_VERSION) && (USB_HOST_SHIELD_VERSION >= 0x020303)
   void Release() override;
   void Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf, uint8_t bAddress, uint8_t epAddress) override;
 #else
@@ -52,6 +52,7 @@ public:
 
   void pot(const uint8_t pin, const uint8_t state) const;
   void joystick(const uint8_t pin, const uint8_t state) const;
+  void send(const uint8_t *buf, const uint16_t len);
 
 private:
   void initPins();

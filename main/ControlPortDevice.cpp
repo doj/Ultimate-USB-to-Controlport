@@ -37,7 +37,7 @@ ControlPortDevice::initMouse()
 }
 
 void
-ControlPortDevice::initJoystick()
+ControlPortDevice::initJoystick(const USBController::type_t t)
 {
 #if 0
   debugp(this);
@@ -48,7 +48,7 @@ ControlPortDevice::initJoystick()
     {
       m_used  = JOYSTICK1;
       s_used |= JOYSTICK1;
-      m_handler = new USBController(1,this);
+      m_handler = new USBController(1,this,t);
       initPins();
       return;
     }
@@ -56,7 +56,7 @@ ControlPortDevice::initJoystick()
     {
       m_used  = JOYSTICK2;
       s_used |= JOYSTICK2;
-      m_handler = new USBController(2,this);
+      m_handler = new USBController(2,this,t);
       initPins();
       return;
     }
@@ -120,7 +120,7 @@ ControlPortDevice::initKeyboard()
   debug("!initKey");
 }
 
-#if defined(USB_HOST_SHIELD_VERSION) && (USB_HOST_SHIELD_VERSION >= 0x010303)
+#if defined(USB_HOST_SHIELD_VERSION) && (USB_HOST_SHIELD_VERSION >= 0x020303)
 void
 ControlPortDevice::Release()
 {
@@ -131,7 +131,7 @@ ControlPortDevice::Release()
 #endif
 
 void
-#if defined(USB_HOST_SHIELD_VERSION) && (USB_HOST_SHIELD_VERSION >= 0x010303)
+#if defined(USB_HOST_SHIELD_VERSION) && (USB_HOST_SHIELD_VERSION >= 0x020303)
 ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf, uint8_t bAddress, uint8_t epAddress)
 {
 #else
@@ -140,7 +140,6 @@ ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
   uint8_t bAddress = 0;
   uint8_t epAddress = 0;
 #endif
-  (void)hid;
   (void)is_rpt_id;
 
 #if 0
@@ -161,7 +160,7 @@ ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
         }
       else if (len == 2)
         {
-          initJoystick();
+          initJoystick(USBController::SonyPS1);
         }
       if (len == 8)
         {
@@ -169,7 +168,14 @@ ControlPortDevice::Parse(USBHID *hid, bool is_rpt_id, uint8_t len, uint8_t *buf)
               buf[1] == 0x7f &&
               buf[2] == 0x7f)
             {
-              initJoystick();
+              initJoystick(USBController::iNNEXT);
+            }
+          else if (buf[0] == 0x80 &&
+                   buf[1] == 0x80 &&
+                   buf[2] == 0x80 &&
+                   buf[3] == 0x80)
+            {
+              initJoystick(USBController::P4_5N);
             }
           else if (buf[1] == 0x00)
             {
@@ -198,7 +204,7 @@ ControlPortDevice::pot(const uint8_t pin, const uint8_t state) const
     {
       digitalWrite(pin, HIGH); // +5V
       pinMode(pin, OUTPUT);
-      debug("\npot "); debugu(pin);
+      debug("pot ");debugu(pin);debugnl();
     }
   else
     {
@@ -223,7 +229,7 @@ ControlPortDevice::joystick(const uint8_t pin, const uint8_t state) const
     {
       digitalWrite(pin, LOW); // GND
       pinMode(pin, OUTPUT);
-      debug("\njoy "); debugu(pin);
+      debug("joy ");debugu(pin);debugnl();
     }
   else
     {
