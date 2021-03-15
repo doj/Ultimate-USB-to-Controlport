@@ -293,6 +293,10 @@ is an interface for
 [SNES controllers](https://en.wikipedia.org/wiki/List_of_Nintendo_controllers#Super_Nintendo_Entertainment_System)
 and Commodore 64 control ports.
 
+[Unijoysticle 2](https://retro.moe/unijoysticle2/)
+an interface for bluetooth wireless controllers and Commodore 64
+control ports.
+
 Test Program
 -------------
 
