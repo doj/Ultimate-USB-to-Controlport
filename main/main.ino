@@ -66,7 +66,7 @@ setup()
 #if !defined(__MIPSEL__)
   while (!Serial); // Wait for serial port to connect - used on Leonardo, Teensy and other boards with built-in USB CDC serial connection
 #endif
-  Serial.println("\nStart");
+  Serial.println("\nStart Ultimate-USB-to-Controlport");
 #endif
 
   if (Usb.Init() == -1)
